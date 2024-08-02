@@ -11,16 +11,16 @@ function Tube({ rotation }: TubeProps) {
     // Create an empty array to stores the points
     let points = [];
     // Define points along Z axis
-    for (let i = 0; i < 250; i += 1) {
-      const yPoint = i > 2 && i < 248 ? Math.random() * 25 : 0;
-      points.push(new THREE.Vector3(0, yPoint, -10 * i));
+    for (let i = 0; i < 50; i += 1) {
+      const yPoint = i > 2 && i < 48 ? Math.random() * 300 : 0;
+      points.push(new THREE.Vector3(0, yPoint, -150 * i));
     }
     return new THREE.CatmullRomCurve3(points);
   });
 
   return (
-    <mesh rotation-y={rotation}>
-      <tubeGeometry args={[curve, 2000, 10, 50, false]} />
+    <mesh rotation-y={rotation} position-z={-10}>
+      <tubeGeometry args={[curve, 1000, 50, 50, false]} />
       <meshStandardMaterial color={'lightgrey'} side={2} />
     </mesh>
   );

@@ -13,14 +13,14 @@ function Scene() {
       <Tube rotation={0} />
 
       <mesh>
-        <sphereGeometry args={[10, 32, 16]} />
+        <sphereGeometry args={[45, 32, 16]} />
         <meshStandardMaterial color={'lightgrey'} />
       </mesh>
 
-      <Player startPosition={[0, 0, -2490]} />
+      <Player startPosition={[0, 0, -7385]} />
 
       {/* Optional */}
-      <OrbitControls />
+      {/* <OrbitControls /> */}
       <Environment preset='studio' />
       <Grid
         sectionSize={3}
