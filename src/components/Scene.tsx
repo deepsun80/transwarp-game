@@ -13,7 +13,7 @@ function Scene() {
       <Tube rotation={0} />
 
       <mesh>
-        <sphereGeometry args={[45, 32, 16]} />
+        <sphereGeometry args={[50, 32, 16]} />
         <meshStandardMaterial color={'lightgrey'} />
       </mesh>
 
