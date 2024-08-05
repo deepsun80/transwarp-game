@@ -1,7 +1,7 @@
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState, useEffect } from 'react';
 // import { extend } from '@react-three/fiber';
 import * as THREE from 'three';
-// import { shaderMaterial } from '@react-three/drei';
+import { GradientTexture, Edges } from '@react-three/drei';
 
 interface TubeProps {
   rotation: Number;
@@ -66,7 +66,10 @@ const applyTwist = (geometry, angle) => {
 
 const Tunnel = ({ curve, twistAngle, position, rotation }) => {
   const tubeRef = useRef();
-  const matRef = useRef();
+  const [stops, setStops] = useState([
+    0.0005, 0.005, 0.01, 0.015, 0.02, 0.025, 1,
+  ]);
+  // const matRef = useRef();
 
   // Create tube geometry and modify vertices with twist
   const geometry = useMemo(() => {
@@ -80,6 +83,24 @@ const Tunnel = ({ curve, twistAngle, position, rotation }) => {
 
   // extend({ RadialGradientMaterial });
 
+  // Change UV direction of tube
+  useEffect(() => {
+    if (tubeRef.current) {
+      const geometry = tubeRef.current.geometry;
+      const uvs = geometry.attributes.uv.array;
+
+      // Modify UVs to apply the gradient around the circumference
+      for (let i = 0; i < uvs.length; i += 2) {
+        const x = uvs[i];
+        const y = uvs[i + 1];
+        uvs[i] = y; // Swap x and y to rotate the texture
+        uvs[i + 1] = x;
+      }
+
+      geometry.attributes.uv.needsUpdate = true;
+    }
+  }, [stops]);
+
   return (
     <mesh
       ref={tubeRef}
@@ -89,7 +110,22 @@ const Tunnel = ({ curve, twistAngle, position, rotation }) => {
       // position-z={position}
     >
       <bufferGeometry attach='geometry' {...geometry} />
-      <meshStandardMaterial color={'lightgrey'} side={2}></meshStandardMaterial>
+      <meshBasicMaterial color={'lightgrey'} side={2}>
+        <GradientTexture
+          stops={stops}
+          colors={[
+            'black',
+            'blue',
+            'violet',
+            'red',
+            'yellow',
+            'white',
+            'white',
+          ]}
+          size={1024}
+        />
+      </meshBasicMaterial>
+      <Edges linewidth={2} threshold={15} color={'white'} />
       {/* <radialGradientMaterial ref={matRef} side={THREE.DoubleSide} /> */}
     </mesh>
   );
@@ -102,9 +138,9 @@ function Tube({ rotation }: TubeProps) {
     let points = [];
     // Define points along Z axis
     for (let i = 0; i < 50; i += 1) {
-      const yPoint = i > 2 && i < 48 ? Math.random() * 200 : 0;
+      const zPoint = i > 2 && i < 48 ? Math.random() * 200 : 0;
       const xPoint = i > 2 && i < 48 ? Math.random() * 200 : 0;
-      points.push(new THREE.Vector3(xPoint, yPoint, -150 * i));
+      points.push(new THREE.Vector3(xPoint, zPoint, -150 * i));
     }
     return new THREE.CatmullRomCurve3(points);
   }, []);

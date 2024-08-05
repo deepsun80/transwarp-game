@@ -20,7 +20,7 @@ function Scene() {
       <Player startPosition={[0, 0, -7385]} />
 
       {/* Optional */}
-      {/* <OrbitControls /> */}
+      <OrbitControls />
       <Environment preset='studio' />
       <Grid
         sectionSize={3}
