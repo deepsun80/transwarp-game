@@ -1,7 +1,6 @@
-import { useMemo, useRef, useState, useEffect } from 'react';
-// import { extend } from '@react-three/fiber';
+import { useMemo, useRef, useState, useEffect, useLayoutEffect } from 'react';
 import * as THREE from 'three';
-import { GradientTexture, Edges } from '@react-three/drei';
+import { GradientTexture } from '@react-three/drei';
 
 interface TubeProps {
   rotation: Number;
@@ -66,6 +65,14 @@ const applyTwist = (geometry, angle) => {
 
 const Tunnel = ({ curve, twistAngle, position, rotation }) => {
   const tubeRef = useRef();
+  const geo = useRef();
+  const seg = useRef();
+
+  useLayoutEffect(
+    () => (seg.current.geometry = new THREE.EdgesGeometry(geo.current)),
+    []
+  );
+
   const [stops, setStops] = useState([
     0.0005, 0.005, 0.01, 0.015, 0.02, 0.025, 1,
   ]);
@@ -109,7 +116,7 @@ const Tunnel = ({ curve, twistAngle, position, rotation }) => {
       // rotation-y={rotation}
       // position-z={position}
     >
-      <bufferGeometry attach='geometry' {...geometry} />
+      <bufferGeometry attach='geometry' {...geometry} ref={geo} />
       <meshBasicMaterial color={'lightgrey'} side={2}>
         <GradientTexture
           stops={stops}
@@ -125,7 +132,9 @@ const Tunnel = ({ curve, twistAngle, position, rotation }) => {
           size={1024}
         />
       </meshBasicMaterial>
-      <Edges linewidth={2} threshold={15} color={'white'} />
+      <lineSegments ref={seg}>
+        <meshBasicMaterial color='white' />
+      </lineSegments>
       {/* <radialGradientMaterial ref={matRef} side={THREE.DoubleSide} /> */}
     </mesh>
   );
