@@ -74,17 +74,17 @@ function Player({ startPosition }: PlayerProps) {
     }
   });
 
-  useFrame(({ camera }) => {
-    cameraPosition.current.getWorldPosition(cameraWorldPosition.current);
-    camera.position.lerp(cameraWorldPosition.current, 0.5);
+  // useFrame(({ camera }) => {
+  //   cameraPosition.current.getWorldPosition(cameraWorldPosition.current);
+  //   camera.position.lerp(cameraWorldPosition.current, 0.5);
 
-    if (cameraTarget?.current) {
-      cameraTarget.current.getWorldPosition(cameraLookAtWorldPosition.current);
-      cameraLookAt.current.lerp(cameraLookAtWorldPosition.current, 0.5);
+  //   if (cameraTarget?.current) {
+  //     cameraTarget.current.getWorldPosition(cameraLookAtWorldPosition.current);
+  //     cameraLookAt.current.lerp(cameraLookAtWorldPosition.current, 0.5);
 
-      camera.lookAt(cameraLookAt.current);
-    }
-  });
+  //     camera.lookAt(cameraLookAt.current);
+  //   }
+  // });
 
   return (
     <group ref={container}>
