@@ -21,8 +21,8 @@ function Scene() {
 
       {/* Optional */}
       {/* <OrbitControls /> */}
-      <Environment preset='studio' />
-      <color attach='background' args={['lightgrey']} />
+      <Environment preset='city' />
+      {/* <color attach='background' args={['lightgrey']} /> */}
       <Grid
         sectionSize={3}
         sectionColor={'white'}

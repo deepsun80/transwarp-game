@@ -67,14 +67,12 @@ const Tunnel = ({ curve, twistAngle, position, rotation }) => {
   const tubeRef = useRef();
   const edgesRef = useRef();
 
-  const [stops, setStops] = useState([
-    0.0001, 0.001, 0.005, 0.01, 0.02, 0.025, 1,
-  ]);
+  const [stops, setStops] = useState([0, 0.005, 0.015, 0.02, 0.025, 1]);
   // const matRef = useRef();
 
   // Create tube geometry and modify vertices with twist
   const geometry = useMemo(() => {
-    const baseGeometry = new THREE.TubeGeometry(curve, 750, 50, 6, false);
+    const baseGeometry = new THREE.TubeGeometry(curve, 750, 50, 32, false);
 
     // Apply twist to geometry
     // applyTwist(baseGeometry, twistAngle);
@@ -133,7 +131,6 @@ const Tunnel = ({ curve, twistAngle, position, rotation }) => {
             colors={[
               'black',
               'blue',
-              'violet',
               'red',
               'yellow',
               'lightgrey',
@@ -143,7 +140,7 @@ const Tunnel = ({ curve, twistAngle, position, rotation }) => {
           />
         </meshStandardMaterial>
         <lineSegments geometry={geometry}>
-          <lineBasicMaterial color='white' />
+          <lineBasicMaterial color='white' linewidth={5} />
         </lineSegments>
         {/* <Edges color='yellow' linewidth={1} ref={edgesRef} threshold={1} /> */}
       </mesh>
@@ -170,8 +167,8 @@ function Tube({ rotation }: TubeProps) {
     let points = [];
     // Define points along Z axis
     for (let i = 0; i < 50; i += 1) {
-      const yPoint = i > 2 && i < 48 ? Math.random() * 300 : 0;
-      const xPoint = i > 2 && i < 48 ? Math.random() * 200 : 0;
+      const yPoint = i > 2 && i < 48 ? Math.random() * 350 : 0;
+      // const xPoint = i > 2 && i < 48 ? Math.random() * 200 : 0;
       points.push(new THREE.Vector3(0, yPoint, -150 * i));
     }
     return new THREE.CatmullRomCurve3(points);
