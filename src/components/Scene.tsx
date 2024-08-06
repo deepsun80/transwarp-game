@@ -13,7 +13,7 @@ function Scene() {
       <Tube rotation={0} />
 
       <mesh>
-        <sphereGeometry args={[45, 32, 16]} />
+        <sphereGeometry args={[50, 32, 16]} />
         <meshStandardMaterial color={'lightgrey'} />
       </mesh>
 
@@ -22,6 +22,7 @@ function Scene() {
       {/* Optional */}
       {/* <OrbitControls /> */}
       <Environment preset='studio' />
+      <color attach='background' args={['lightgrey']} />
       <Grid
         sectionSize={3}
         sectionColor={'white'}

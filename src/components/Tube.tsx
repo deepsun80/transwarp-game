@@ -68,7 +68,7 @@ const Tunnel = ({ curve, twistAngle, position, rotation }) => {
   const edgesRef = useRef();
 
   const [stops, setStops] = useState([
-    0.0005, 0.005, 0.01, 0.015, 0.02, 0.025, 1,
+    0.0001, 0.001, 0.005, 0.01, 0.02, 0.025, 1,
   ]);
   // const matRef = useRef();
 
@@ -77,7 +77,7 @@ const Tunnel = ({ curve, twistAngle, position, rotation }) => {
     const baseGeometry = new THREE.TubeGeometry(curve, 750, 50, 6, false);
 
     // Apply twist to geometry
-    applyTwist(baseGeometry, twistAngle);
+    // applyTwist(baseGeometry, twistAngle);
 
     return baseGeometry;
   }, [curve, twistAngle]);
@@ -107,39 +107,59 @@ const Tunnel = ({ curve, twistAngle, position, rotation }) => {
 
   useEffect(() => {
     if (edgesRef?.current) {
+      edgesRef.current.parent.geometry.parameters.radius = 35;
       console.log(edgesRef.current);
     }
   }, [edgesRef]);
 
   return (
-    <mesh
-      ref={tubeRef}
-      geometry={geometry}
-      // material={material}
-      // rotation-y={rotation}
-      // position-z={position}
-    >
-      <bufferGeometry attach='geometry' {...geometry} />
-      <meshBasicMaterial color='transparent' side={2} transparent opacity={1}>
-        <GradientTexture
-          stops={stops}
-          colors={[
-            'black',
-            'blue',
-            'violet',
-            'red',
-            'yellow',
-            'white',
-            'white',
-          ]}
-          // size={1024}
+    <group>
+      <mesh
+        ref={tubeRef}
+        geometry={geometry}
+        // material={material}
+        // rotation-y={rotation}
+        // position-z={position}
+      >
+        <bufferGeometry attach='geometry' {...geometry} />
+        <meshStandardMaterial
+          color='transparent'
+          side={2}
+          transparent
+          opacity={1}
+        >
+          <GradientTexture
+            stops={stops}
+            colors={[
+              'black',
+              'blue',
+              'violet',
+              'red',
+              'yellow',
+              'lightgrey',
+              'lightgrey',
+            ]}
+            // size={1024}
+          />
+        </meshStandardMaterial>
+        <lineSegments geometry={geometry}>
+          <lineBasicMaterial color='white' />
+        </lineSegments>
+        {/* <Edges color='yellow' linewidth={1} ref={edgesRef} threshold={1} /> */}
+      </mesh>
+      {/* <points geometry={new THREE.TubeGeometry(curve, 750, 50, 6, false)}>
+        <pointsMaterial
+          size={3}
+          sizeAttenuation
+          color={'white'}
+          // attach='material'
+          // map={pointImg}
+          // transparent={false}
+          // alphaTest={0.5}
+          // opacity={1}
         />
-      </meshBasicMaterial>
-      {/* <lineSegments geometry={edgesGeometry}>
-        <lineBasicMaterial color='white' />
-      </lineSegments> */}
-      {/* <Edges color='white' linewidth={2} ref={edgesRef} threshold={20} /> */}
-    </mesh>
+      </points> */}
+    </group>
   );
 };
 
@@ -150,9 +170,9 @@ function Tube({ rotation }: TubeProps) {
     let points = [];
     // Define points along Z axis
     for (let i = 0; i < 50; i += 1) {
-      const zPoint = i > 2 && i < 48 ? Math.random() * 200 : 0;
+      const yPoint = i > 2 && i < 48 ? Math.random() * 300 : 0;
       const xPoint = i > 2 && i < 48 ? Math.random() * 200 : 0;
-      points.push(new THREE.Vector3(xPoint, zPoint, -150 * i));
+      points.push(new THREE.Vector3(0, yPoint, -150 * i));
     }
     return new THREE.CatmullRomCurve3(points);
   }, []);
