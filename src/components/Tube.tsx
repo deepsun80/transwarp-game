@@ -74,7 +74,7 @@ const Tunnel = ({ curve, position, rotation, playerPosition }: TunnelProps) => {
           <GradientTexture
             stops={stops}
             colors={[
-              'black',
+              '#010b19',
               'blue',
               'red',
               'yellow',

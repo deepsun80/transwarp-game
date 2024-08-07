@@ -46,7 +46,7 @@ function Player({ startPosition, setPlayerPosition }: PlayerProps) {
     }
   });
 
-  // Player movement
+  // Player movement and collision detection
   useFrame(() => {
     const { PlayerSpeed, Acceleration } = Speed;
     const forward = new THREE.Vector3();
@@ -83,6 +83,10 @@ function Player({ startPosition, setPlayerPosition }: PlayerProps) {
     } else {
       setAcc(0);
     }
+
+    // Collision detection
+    const intersections = raycast();
+    console.log('intersections', intersections);
   });
 
   // Position camera relative to player
