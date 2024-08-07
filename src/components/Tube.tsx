@@ -1,13 +1,9 @@
 import { useMemo, useRef, useState, useEffect } from 'react';
 import * as THREE from 'three';
-import { useFrame } from '@react-three/fiber';
 import { GradientTexture } from '@react-three/drei';
-import { useKeyboardControls } from '@react-three/drei';
-import { Controls, Speed } from '../helpers';
 
 interface TubeProps {
   rotation: Number;
-  cameraPosition: Number;
   playerPosition: Number;
 }
 
@@ -15,25 +11,13 @@ interface TunnelProps {
   curve: any;
   position: Number;
   rotation: Number;
-  cameraPosition: Number;
   playerPosition: Number;
 }
 
-const Tunnel = ({
-  curve,
-  position,
-  rotation,
-  cameraPosition,
-  playerPosition,
-}: TunnelProps) => {
+const Tunnel = ({ curve, position, rotation, playerPosition }: TunnelProps) => {
   const tubeRef = useRef();
 
   const [stops, setStops] = useState([0, 0.005, 0.015, 0.02, 0.025, 1]);
-
-  const forwardPressed = useKeyboardControls(
-    (state) => state[Controls.forward]
-  );
-  const backPressed = useKeyboardControls((state) => state[Controls.back]);
 
   // Create tube geometry and modify vertices
   const geometry = useMemo(() => {
@@ -60,56 +44,14 @@ const Tunnel = ({
     }
   }, []);
 
-  // useFrame(() => {
-  //   if (tubeRef?.current && forwardPressed) {
-  //     setStops((prevStops) => {
-  //       const newStops = prevStops.map((stop) =>
-  //         stop < 1 ? stop + 0.0002 : 1
-  //       );
-  //       return newStops;
-  //     });
-  //   }
-  // });
-
-  // useEffect(() => {
-  // const zMax = cameraPosition + 7383.5;
-  // const stopConst = [0, 0.005, 0.015, 0.02, 0.025, 1];
-  // if (zMax > 0 && zMax < 7383.5) {
-  // console.log('cameraPosition', zMax);
-  // console.log('stop', stops[2]);
-  // const updatedStops = stopConst.map((el, index) => {
-  // return zMax + el < 1 ? zMax + el : 1;
-  // });
-  // console.log('updatedStops', updatedStops[1]);
-  // setStops((prevStops) => {
-  //   const newStops = prevStops.map((stop, index) =>
-  //     index < prevStops.length - 1 ? (zMax + stop) % 1 : 1
-  //   );
-  //   console.log('newStops', newStops);
-  //   return newStops;
-  // });
-  // setStops(updatedStops);
-  // }
-  // }, [cameraPosition]);
-
   useEffect(() => {
     console.log('playerPosition', playerPosition);
-    // console.log('playerPosition modulo', playerPosition / 10);
     const updatedStops = [0, 0.005, 0.015, 0.02, 0.025, 1].map((el) => {
       return el + playerPosition / 14900 < 1 ? el + playerPosition / 14900 : 1;
     });
     console.log('updatedStops', updatedStops);
     setStops(updatedStops);
   }, [playerPosition]);
-
-  // useFrame(() => {
-  //   setStops((prevStops) => {
-  //     const newStops = prevStops.map((stop, index) =>
-  //       index < prevStops.length - 1 ? (stop + 0.001) % 1 : 1
-  //     );
-  //     return newStops;
-  //   });
-  // });
 
   return (
     <group>
@@ -147,7 +89,7 @@ const Tunnel = ({
   );
 };
 
-function Tube({ rotation, cameraPosition, playerPosition }: TubeProps) {
+function Tube({ rotation, playerPosition }: TubeProps) {
   // Create a curve based on the points
   const curve = useMemo(() => {
     // Create an empty array to stores the points
@@ -168,7 +110,6 @@ function Tube({ rotation, cameraPosition, playerPosition }: TubeProps) {
       curve={curve}
       rotation={rotation}
       position={position}
-      cameraPosition={cameraPosition}
       playerPosition={playerPosition}
     />
   );

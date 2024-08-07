@@ -7,15 +7,10 @@ import * as THREE from 'three';
 
 interface PlayerProps {
   startPosition: number[];
-  setCameraPosition: (args: Number) => void;
   setPlayerPosition: (args: Number) => void;
 }
 
-function Player({
-  startPosition,
-  setCameraPosition,
-  setPlayerPosition,
-}: PlayerProps) {
+function Player({ startPosition, setPlayerPosition }: PlayerProps) {
   const playerRef = useRef();
   const container = useRef();
   const cameraTarget = useRef();
@@ -93,10 +88,6 @@ function Player({
       cameraLookAt.current.lerp(cameraLookAtWorldPosition.current, 0.5);
 
       camera.lookAt(cameraLookAt.current);
-      setCameraPosition(
-        cameraTarget.current.getWorldPosition(cameraLookAtWorldPosition.current)
-          .z
-      );
     }
   });
 

@@ -4,7 +4,6 @@ import Tube from './Tube';
 import Player from './Player';
 
 function Scene() {
-  const [cameraPosition, setCameraPosition] = useState(0);
   const [playerPosition, setPlayerPosition] = useState(0);
 
   return (
@@ -12,11 +11,7 @@ function Scene() {
       {/* <Lights /> */}
 
       {/* Geometry */}
-      <Tube
-        rotation={0}
-        cameraPosition={cameraPosition}
-        playerPosition={playerPosition}
-      />
+      <Tube rotation={0} playerPosition={playerPosition} />
 
       <mesh>
         <sphereGeometry args={[50, 32, 16]} />
@@ -25,7 +20,6 @@ function Scene() {
 
       <Player
         startPosition={[0, 0, -14745]}
-        setCameraPosition={setCameraPosition}
         setPlayerPosition={setPlayerPosition}
       />
 
