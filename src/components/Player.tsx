@@ -7,9 +7,15 @@ import * as THREE from 'three';
 
 interface PlayerProps {
   startPosition: number[];
+  setCameraPosition: (args: Number) => void;
+  setPlayerPosition: (args: Number) => void;
 }
 
-function Player({ startPosition }: PlayerProps) {
+function Player({
+  startPosition,
+  setCameraPosition,
+  setPlayerPosition,
+}: PlayerProps) {
   const playerRef = useRef();
   const container = useRef();
   const cameraTarget = useRef();
@@ -52,10 +58,12 @@ function Player({ startPosition }: PlayerProps) {
         container.current.position.add(forward.multiplyScalar(velocity.z));
 
         setAcc(acc + Acceleration);
+        setPlayerPosition(container.current.position.z);
       } else {
-        const velocity = new THREE.Vector3(0, 0, -PlayerSpeed);
+        const velocity = new THREE.Vector3(0, 0, -acc);
         playerRef.current.getWorldDirection(forward);
         container.current.position.add(forward.multiplyScalar(velocity.z));
+        setPlayerPosition(container.current.position.z);
       }
     } else if (container?.current && backPressed) {
       if (acc < PlayerSpeed) {
@@ -64,10 +72,12 @@ function Player({ startPosition }: PlayerProps) {
         container.current.position.sub(forward.multiplyScalar(velocity.z));
 
         setAcc(acc + Acceleration);
+        setPlayerPosition(container.current.position.z);
       } else {
-        const velocity = new THREE.Vector3(0, 0, -PlayerSpeed);
+        const velocity = new THREE.Vector3(0, 0, -acc);
         playerRef.current.getWorldDirection(forward);
         container.current.position.sub(forward.multiplyScalar(velocity.z));
+        setPlayerPosition(container.current.position.z);
       }
     } else {
       setAcc(0);
@@ -83,6 +93,10 @@ function Player({ startPosition }: PlayerProps) {
       cameraLookAt.current.lerp(cameraLookAtWorldPosition.current, 0.5);
 
       camera.lookAt(cameraLookAt.current);
+      setCameraPosition(
+        cameraTarget.current.getWorldPosition(cameraLookAtWorldPosition.current)
+          .z
+      );
     }
   });
 
