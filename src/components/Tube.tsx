@@ -21,7 +21,7 @@ const Tunnel = ({ curve, position, rotation, playerPosition }: TunnelProps) => {
 
   // Create tube geometry and modify vertices
   const geometry = useMemo(() => {
-    const baseGeometry = new THREE.TubeGeometry(curve, 2500, 50, 32, false);
+    const baseGeometry = new THREE.TubeGeometry(curve, 2500, 55, 32, false);
 
     return baseGeometry;
   }, [curve]);
@@ -44,12 +44,15 @@ const Tunnel = ({ curve, position, rotation, playerPosition }: TunnelProps) => {
     }
   }, []);
 
+  // Make colors follow player position
   useEffect(() => {
-    console.log('playerPosition', playerPosition);
     const updatedStops = [0, 0.005, 0.015, 0.02, 0.025, 1].map((el) => {
-      return el + playerPosition / 14900 < 1 ? el + playerPosition / 14900 : 1;
+      return el + playerPosition / 6050 >= 1
+        ? 1
+        : el + playerPosition / 6050 <= 0
+        ? 0
+        : el + playerPosition / 6050;
     });
-    console.log('updatedStops', updatedStops);
     setStops(updatedStops);
   }, [playerPosition]);
 
@@ -95,10 +98,14 @@ function Tube({ rotation, playerPosition }: TubeProps) {
     // Create an empty array to stores the points
     let points = [];
     // Define points along Z axis
-    for (let i = 0; i < 50; i += 1) {
-      const yPoint = i > 2 && i < 48 ? Math.random() * 500 : 0;
+    for (let i = 0; i < 20; i += 1) {
+      // let yPoint = 0;
+      // if (i > 1 && i < 18 && i % 2 == 0) {
+      //   yPoint = 400;
+      // }
+      const yPoint = i > 1 && i < 18 ? Math.random() * 400 : 0;
       // const xPoint = i > 2 && i < 48 ? Math.random() * 200 : 0;
-      points.push(new THREE.Vector3(0, yPoint, -300 * i));
+      points.push(new THREE.Vector3(0, yPoint, -325 * i));
     }
     return new THREE.CatmullRomCurve3(points);
   }, []);

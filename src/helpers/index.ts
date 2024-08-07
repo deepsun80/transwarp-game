@@ -4,9 +4,9 @@ export const Controls = {
 };
 
 export const Speed = {
-  PlayerSpeed: 3,
+  PlayerSpeed: 4,
   Acceleration: 0.05,
-  RotationSpeed: 0.5,
+  // RotationSpeed: 0.5,
 };
 
 // export function useKeyboard() {

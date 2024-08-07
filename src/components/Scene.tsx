@@ -19,7 +19,7 @@ function Scene() {
       </mesh>
 
       <Player
-        startPosition={[0, 0, -14745]}
+        startPosition={[0, 0, -6200]}
         setPlayerPosition={setPlayerPosition}
       />
 

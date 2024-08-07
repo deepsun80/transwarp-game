@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useKeyboardControls } from '@react-three/drei';
 import { Controls, Speed } from '../helpers';
+import { useForwardRaycast } from '../helpers/useForwardRaycast';
 
 import * as THREE from 'three';
 
@@ -16,6 +17,8 @@ function Player({ startPosition, setPlayerPosition }: PlayerProps) {
   const cameraTarget = useRef();
   const cameraPosition = useRef();
 
+  const raycast = useForwardRaycast(playerRef);
+
   const cameraWorldPosition = useRef(new THREE.Vector3());
   const cameraLookAtWorldPosition = useRef(new THREE.Vector3());
   const cameraLookAt = useRef(new THREE.Vector3());
@@ -27,6 +30,7 @@ function Player({ startPosition, setPlayerPosition }: PlayerProps) {
   );
   const backPressed = useKeyboardControls((state) => state[Controls.back]);
 
+  // Player rotation based on mouse pointer
   useFrame(({ pointer }) => {
     if (playerRef?.current) {
       playerRef.current.rotation.x = THREE.MathUtils.lerp(
@@ -42,10 +46,12 @@ function Player({ startPosition, setPlayerPosition }: PlayerProps) {
     }
   });
 
+  // Player movement
   useFrame(() => {
     const { PlayerSpeed, Acceleration } = Speed;
     const forward = new THREE.Vector3();
 
+    // Player movement
     if (container?.current && playerRef?.current && forwardPressed) {
       if (acc < PlayerSpeed) {
         const velocity = new THREE.Vector3(0, 0, -acc);
@@ -55,7 +61,7 @@ function Player({ startPosition, setPlayerPosition }: PlayerProps) {
         setAcc(acc + Acceleration);
         setPlayerPosition(container.current.position.z);
       } else {
-        const velocity = new THREE.Vector3(0, 0, -acc);
+        const velocity = new THREE.Vector3(0, 0, -PlayerSpeed);
         playerRef.current.getWorldDirection(forward);
         container.current.position.add(forward.multiplyScalar(velocity.z));
         setPlayerPosition(container.current.position.z);
@@ -69,7 +75,7 @@ function Player({ startPosition, setPlayerPosition }: PlayerProps) {
         setAcc(acc + Acceleration);
         setPlayerPosition(container.current.position.z);
       } else {
-        const velocity = new THREE.Vector3(0, 0, -acc);
+        const velocity = new THREE.Vector3(0, 0, -PlayerSpeed);
         playerRef.current.getWorldDirection(forward);
         container.current.position.sub(forward.multiplyScalar(velocity.z));
         setPlayerPosition(container.current.position.z);
@@ -79,6 +85,7 @@ function Player({ startPosition, setPlayerPosition }: PlayerProps) {
     }
   });
 
+  // Position camera relative to player
   useFrame(({ camera }) => {
     cameraPosition.current.getWorldPosition(cameraWorldPosition.current);
     camera.position.lerp(cameraWorldPosition.current, 0.5);
