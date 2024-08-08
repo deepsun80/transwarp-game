@@ -2,13 +2,14 @@ import { useState, useContext, useEffect } from 'react';
 import { Grid, OrbitControls, Environment } from '@react-three/drei';
 import Tube from './Tube';
 import Player from './Player';
+import PlayerStatic from './PlayerStatic';
 import StartText from './StartText';
 import { AppContext } from '../context/AppContext';
 
 function Scene() {
   const appContext = useContext(AppContext);
-  const gameStart = appContext?.gameStart;
 
+  const gameStart = appContext?.gameStart;
   const toggleGameStart = appContext?.toggleGameStart;
 
   const [timer, setTimer] = useState(2);
@@ -19,7 +20,7 @@ function Scene() {
       setTimeout(() => {
         setTimer(timer - 1);
       }, 1000);
-    }
+    } else if (gameStart) setTimer(2);
   }, [gameStart, timer]);
 
   useEffect(() => {
@@ -28,7 +29,7 @@ function Scene() {
         toggleGameStart(true);
       }, 1000);
     }
-  });
+  }, [timer]);
 
   return (
     <>
@@ -42,15 +43,19 @@ function Scene() {
         <meshStandardMaterial color={'lightgrey'} />
       </mesh>
 
-      <Player
-        startPosition={[0, 0, -6200]}
-        setPlayerPosition={setPlayerPosition}
-      />
+      {gameStart ? (
+        <Player
+          startPosition={[0, 0, -6200]}
+          setPlayerPosition={setPlayerPosition}
+        />
+      ) : (
+        <PlayerStatic startPosition={[0, 0, -6200]} />
+      )}
 
       {!gameStart && <StartText timer={timer} />}
 
       {/* Optional */}
-      <OrbitControls />
+      {/* <OrbitControls /> */}
       <Environment preset='city' />
       <Grid
         sectionSize={3}

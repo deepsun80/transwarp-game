@@ -1,6 +1,6 @@
-import { useRef, useState, useContext } from 'react';
+import { useRef, useState, useContext, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { useKeyboardControls } from '@react-three/drei';
+import { useKeyboardControls, useHelper } from '@react-three/drei';
 import { Controls, Speed } from '../helpers';
 import { useForwardRaycast } from '../helpers/useForwardRaycast';
 import { AppContext } from '../context/AppContext';
@@ -30,22 +30,31 @@ function Player({ startPosition, setPlayerPosition }: PlayerProps) {
   const cameraLookAt = useRef(new THREE.Vector3());
 
   const [acc, setAcc] = useState(0);
+  const [startCollitionCheck, setStartCollitionCheck] = useState(false);
+
+  useHelper(playerRef, THREE.BoxHelper, 'red');
 
   const forwardPressed = useKeyboardControls(
     (state) => state[Controls.forward]
   );
   const backPressed = useKeyboardControls((state) => state[Controls.back]);
 
-  // Player rotation based on mouse pointer
+  useEffect(() => {
+    if (!gameStart) {
+      setStartCollitionCheck(false);
+    }
+  });
+
+  // Player and camera rotation based on mouse pointer
   useFrame(({ pointer }) => {
     // Set rotation of player to 0 when starting
-    // if (!gameStart && container?.current && playerRef?.current) {
-    //   container.current.rotation.x = THREE.MathUtils.degToRad(0);
-    //   playerRef.current.rotation.x = THREE.MathUtils.degToRad(0);
+    // if (!gameStart && playerRef?.current) {
+    //   // container.current.rotation.x = THREE.MathUtils.degToRad(0);
+    //   playerRef.current.rotation.x = 0;
     //   return;
     // }
 
-    if (playerRef?.current && gameStart) {
+    if (playerRef?.current) {
       playerRef.current.rotation.x = THREE.MathUtils.lerp(
         playerRef.current.rotation.x,
         -pointer.y * 1 - THREE.MathUtils.degToRad(180),
@@ -53,7 +62,7 @@ function Player({ startPosition, setPlayerPosition }: PlayerProps) {
       );
     }
 
-    if (cameraTarget?.current && cameraPosition?.current && gameStart) {
+    if (cameraTarget?.current && cameraPosition?.current) {
       cameraTarget.current.position.y = pointer.y * 2;
       cameraPosition.current.position.y = -pointer.y * 2;
     }
@@ -62,11 +71,11 @@ function Player({ startPosition, setPlayerPosition }: PlayerProps) {
   // Player movement and collision detection
   useFrame(() => {
     // If game starting place container and player positions to start
-    if (!gameStart && container?.current && playerRef?.current) {
-      container.current.position.set(0, 0, 0);
-      playerRef.current.position.set(0, 0, -6200);
-      return;
-    }
+    // if (!gameStart && container?.current && playerRef?.current) {
+    //   // container.current.position.set(0, 0, 0);
+    //   // playerRef.current.position.set(0, 0, -6200);
+    //   return;
+    // }
 
     const { PlayerSpeed, Acceleration } = Speed;
     const forward = new THREE.Vector3();
@@ -105,12 +114,14 @@ function Player({ startPosition, setPlayerPosition }: PlayerProps) {
     }
 
     // Collision detection
-    const intersections = raycast();
-    if (intersections?.length > 2 && gameStart) {
-      console.log(intersections);
-      toggleGameStart(false);
-    }
-    // console.log('intersections', intersections);
+    // const intersections = raycast();
+    // if (intersections?.length <= 0) {
+    //   setStartCollitionCheck(true);
+    // }
+    // if (intersections?.length > 2 && startCollitionCheck) {
+    //   console.log('intercetion!!!', intersections);
+    //   // toggleGameStart(false);
+    // }
   });
 
   // Position camera relative to player
