@@ -1,5 +1,4 @@
-import { useMemo } from 'react';
-import { Suspense } from 'react';
+import { useMemo, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import Scene from './components/Scene';
 import { KeyboardControls } from '@react-three/drei';
@@ -13,6 +12,7 @@ function App() {
     ],
     []
   );
+
   return (
     <KeyboardControls map={map}>
       <Canvas camera={{ position: [0, 0, -6200], fov: 60, far: 10000 }}>

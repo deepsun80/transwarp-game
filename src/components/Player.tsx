@@ -1,8 +1,9 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useContext } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useKeyboardControls } from '@react-three/drei';
 import { Controls, Speed } from '../helpers';
 import { useForwardRaycast } from '../helpers/useForwardRaycast';
+import { AppContext } from '../context/AppContext';
 
 import * as THREE from 'three';
 
@@ -16,6 +17,11 @@ function Player({ startPosition, setPlayerPosition }: PlayerProps) {
   const container = useRef();
   const cameraTarget = useRef();
   const cameraPosition = useRef();
+
+  const appContext = useContext(AppContext);
+
+  const gameStart = appContext?.gameStart;
+  const toggleGameStart = appContext?.toggleGameStart;
 
   const raycast = useForwardRaycast(playerRef);
 
@@ -32,7 +38,14 @@ function Player({ startPosition, setPlayerPosition }: PlayerProps) {
 
   // Player rotation based on mouse pointer
   useFrame(({ pointer }) => {
-    if (playerRef?.current) {
+    // Set rotation of player to 0 when starting
+    // if (!gameStart && container?.current && playerRef?.current) {
+    //   container.current.rotation.x = THREE.MathUtils.degToRad(0);
+    //   playerRef.current.rotation.x = THREE.MathUtils.degToRad(0);
+    //   return;
+    // }
+
+    if (playerRef?.current && gameStart) {
       playerRef.current.rotation.x = THREE.MathUtils.lerp(
         playerRef.current.rotation.x,
         -pointer.y * 1 - THREE.MathUtils.degToRad(180),
@@ -40,7 +53,7 @@ function Player({ startPosition, setPlayerPosition }: PlayerProps) {
       );
     }
 
-    if (cameraTarget?.current && cameraPosition?.current) {
+    if (cameraTarget?.current && cameraPosition?.current && gameStart) {
       cameraTarget.current.position.y = pointer.y * 2;
       cameraPosition.current.position.y = -pointer.y * 2;
     }
@@ -48,6 +61,13 @@ function Player({ startPosition, setPlayerPosition }: PlayerProps) {
 
   // Player movement and collision detection
   useFrame(() => {
+    // If game starting place container and player positions to start
+    if (!gameStart && container?.current && playerRef?.current) {
+      container.current.position.set(0, 0, 0);
+      playerRef.current.position.set(0, 0, -6200);
+      return;
+    }
+
     const { PlayerSpeed, Acceleration } = Speed;
     const forward = new THREE.Vector3();
 
@@ -86,7 +106,11 @@ function Player({ startPosition, setPlayerPosition }: PlayerProps) {
 
     // Collision detection
     const intersections = raycast();
-    console.log('intersections', intersections);
+    if (intersections?.length > 2 && gameStart) {
+      console.log(intersections);
+      toggleGameStart(false);
+    }
+    // console.log('intersections', intersections);
   });
 
   // Position camera relative to player

@@ -1,10 +1,34 @@
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Grid, OrbitControls, Environment } from '@react-three/drei';
 import Tube from './Tube';
 import Player from './Player';
+import StartText from './StartText';
+import { AppContext } from '../context/AppContext';
 
 function Scene() {
+  const appContext = useContext(AppContext);
+  const gameStart = appContext?.gameStart;
+
+  const toggleGameStart = appContext?.toggleGameStart;
+
+  const [timer, setTimer] = useState(2);
   const [playerPosition, setPlayerPosition] = useState(0);
+
+  useEffect(() => {
+    if (!gameStart && timer > 0) {
+      setTimeout(() => {
+        setTimer(timer - 1);
+      }, 1000);
+    }
+  }, [gameStart, timer]);
+
+  useEffect(() => {
+    if (timer <= 0) {
+      setTimeout(() => {
+        toggleGameStart(true);
+      }, 1000);
+    }
+  });
 
   return (
     <>
@@ -22,6 +46,8 @@ function Scene() {
         startPosition={[0, 0, -6200]}
         setPlayerPosition={setPlayerPosition}
       />
+
+      {!gameStart && <StartText timer={timer} />}
 
       {/* Optional */}
       <OrbitControls />
