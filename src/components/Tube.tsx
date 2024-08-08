@@ -6,42 +6,6 @@ interface TubeProps {
   rotation: Number;
 }
 
-// Define the GLSL shader material
-// const RadialGradientMaterial = shaderMaterial(
-//   { time: 0, color: new THREE.Color(0.2, 0.0, 0.1) },
-//   // Vertex Shader
-//   `
-//   varying vec2 vUv;
-//   void main() {
-//     vUv = uv;
-//     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-//   }
-//   `,
-//   // Fragment Shader
-//   `
-//   varying vec2 vUv;
-//   void main() {
-//     vec2 uv = vUv * 2.0 - 1.0;
-//     float len = length(uv);
-//     vec3 color = vec3(0.0);
-
-//     if (len < 0.2) {
-//       color = mix(vec3(0.0, 0.0, 1.0), vec3(0.0, 1.0, 0.0), len / 0.2);
-//     } else if (len < 0.4) {
-//       color = mix(vec3(0.0, 1.0, 0.0), vec3(1.0, 1.0, 0.0), (len - 0.2) / 0.2);
-//     } else if (len < 0.6) {
-//       color = mix(vec3(1.0, 1.0, 0.0), vec3(1.0, 0.0, 0.0), (len - 0.4) / 0.2);
-//     } else if (len < 0.8) {
-//       color = mix(vec3(1.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), (len - 0.6) / 0.2);
-//     } else {
-//       color = vec3(1.0, 1.0, 1.0);
-//     }
-
-//     gl_FragColor = vec4(color, 1.0);
-//   }
-//   `
-// );
-
 // Twist function from the article
 const applyTwist = (geometry, angle) => {
   const quaternion = new THREE.Quaternion();
@@ -65,71 +29,92 @@ const applyTwist = (geometry, angle) => {
 
 const Tunnel = ({ curve, twistAngle, position, rotation }) => {
   const tubeRef = useRef();
-  const edgesRef = useRef();
 
   const [stops, setStops] = useState([0, 0.005, 0.015, 0.02, 0.025, 1]);
   // const matRef = useRef();
+  const colors = ['violet', 'blue', 'green', 'yellow', 'orange', 'red'].map(
+    (color) => new THREE.Color(color)
+  );
 
   // Create tube geometry and modify vertices with twist
   const geometry = useMemo(() => {
-    const baseGeometry = new THREE.TubeGeometry(curve, 750, 50, 32, false);
+    const baseGeometry = new THREE.TubeGeometry(curve, 2000, 55, 32, false);
 
     // Apply twist to geometry
     // applyTwist(baseGeometry, twistAngle);
+    const colorArray = new Float32Array(
+      baseGeometry.attributes.position.count * 3
+    );
+
+    const indexArray = baseGeometry.index.array;
+
+    // Assign random colors to each face
+    for (let i = 0; i < indexArray.length; i += 3) {
+      const color = colors[Math.floor(Math.random() * colors.length)];
+
+      for (let j = 0; j < 3; j++) {
+        color.toArray(colorArray, indexArray[i + j] * 3);
+      }
+    }
+
+    baseGeometry.setAttribute(
+      'color',
+      new THREE.BufferAttribute(colorArray, 3)
+    );
 
     return baseGeometry;
   }, [curve, twistAngle]);
 
-  // extend({ RadialGradientMaterial });
-  const edgesGeometry = useMemo(() => {
-    return new THREE.EdgesGeometry(geometry);
-  }, [curve, twistAngle]);
-
   // Change UV direction of tube
-  useEffect(() => {
-    if (tubeRef.current) {
-      const geometry = tubeRef.current.geometry;
-      const uvs = geometry.attributes.uv.array;
+  // useEffect(() => {
+  //   if (tubeRef.current) {
+  //     const geometry = tubeRef.current.geometry;
+  //     const uvs = geometry.attributes.uv.array;
 
-      // Modify UVs to apply the gradient around the circumference
-      for (let i = 0; i < uvs.length; i += 2) {
-        const x = uvs[i];
-        const y = uvs[i + 1];
-        uvs[i] = y; // Swap x and y to rotate the texture
-        uvs[i + 1] = x;
-      }
+  //     // Modify UVs to apply the gradient around the circumference
+  //     for (let i = 0; i < uvs.length; i += 2) {
+  //       const x = uvs[i];
+  //       const y = uvs[i + 1];
+  //       uvs[i] = y; // Swap x and y to rotate the texture
+  //       uvs[i + 1] = x;
+  //     }
 
-      geometry.attributes.uv.needsUpdate = true;
-    }
-  }, [stops]);
+  //     geometry.attributes.uv.needsUpdate = true;
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    if (edgesRef?.current) {
-      edgesRef.current.parent.geometry.parameters.radius = 35;
-      console.log(edgesRef.current);
-    }
-  }, [edgesRef]);
+  // useEffect(() => {
+  //   if (edgesRef?.current) {
+  //     edgesRef.current.parent.geometry.parameters.radius = 35;
+  //   }
+  // }, [edgesRef]);
 
   return (
     <group>
       <mesh
         ref={tubeRef}
         geometry={geometry}
-        // material={material}
-        // rotation-y={rotation}
-        // position-z={position}
+        rotation-y={rotation}
+        position-z={position}
       >
         <bufferGeometry attach='geometry' {...geometry} />
         <meshStandardMaterial
+          vertexColors
+          // color='transparent'
+          side={THREE.DoubleSide}
+          // transparent
+          // opacity={1}
+        />
+        {/*<meshStandardMaterial
           color='transparent'
-          side={2}
+          side={THREE.BackSide}
           transparent
           opacity={1}
         >
           <GradientTexture
             stops={stops}
             colors={[
-              'black',
+              '#010b19',
               'blue',
               'red',
               'yellow',
@@ -138,24 +123,11 @@ const Tunnel = ({ curve, twistAngle, position, rotation }) => {
             ]}
             // size={1024}
           />
-        </meshStandardMaterial>
-        <lineSegments geometry={geometry}>
+        </meshStandardMaterial>*/}
+        {/* <lineSegments geometry={geometry}>
           <lineBasicMaterial color='white' linewidth={5} />
-        </lineSegments>
-        {/* <Edges color='yellow' linewidth={1} ref={edgesRef} threshold={1} /> */}
+        </lineSegments> */}
       </mesh>
-      {/* <points geometry={new THREE.TubeGeometry(curve, 750, 50, 6, false)}>
-        <pointsMaterial
-          size={3}
-          sizeAttenuation
-          color={'white'}
-          // attach='material'
-          // map={pointImg}
-          // transparent={false}
-          // alphaTest={0.5}
-          // opacity={1}
-        />
-      </points> */}
     </group>
   );
 };
@@ -166,10 +138,14 @@ function Tube({ rotation }: TubeProps) {
     // Create an empty array to stores the points
     let points = [];
     // Define points along Z axis
-    for (let i = 0; i < 50; i += 1) {
-      const yPoint = i > 2 && i < 48 ? Math.random() * 350 : 0;
+    for (let i = 0; i < 20; i += 1) {
+      // let yPoint = 0;
+      // if (i > 1 && i < 18 && i % 2 == 0) {
+      //   yPoint = 400;
+      // }
+      const yPoint = i > 1 && i < 18 ? Math.random() * 400 : 0;
       // const xPoint = i > 2 && i < 48 ? Math.random() * 200 : 0;
-      points.push(new THREE.Vector3(0, yPoint, -150 * i));
+      points.push(new THREE.Vector3(0, yPoint, -325 * i));
     }
     return new THREE.CatmullRomCurve3(points);
   }, []);

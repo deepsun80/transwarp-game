@@ -15,7 +15,7 @@ function App() {
   );
   return (
     <KeyboardControls map={map}>
-      <Canvas camera={{ position: [0, 0, -7390], fov: 60, far: 10000 }}>
+      <Canvas camera={{ position: [0, 0, -6200], fov: 60, far: 10000 }}>
         {/* <Canvas camera={{ position: [0, 0, -7390], fov: 60, far: 600 }}> */}
         <Suspense fallback={'Loading...'}>
           <color attach='background' args={['#171720']} />
