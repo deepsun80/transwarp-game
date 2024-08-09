@@ -95,19 +95,37 @@ const Tunnel = ({ curve, position, rotation, playerPosition }: TunnelProps) => {
 function Tube({ rotation, playerPosition }: TubeProps) {
   // Create a curve based on the points
   const curve = useMemo(() => {
-    // Create an empty array to stores the points
     let points = [];
+
     // Define points along Z axis
     for (let i = 0; i < 20; i += 1) {
-      // let yPoint = 0;
-      // if (i > 1 && i < 18 && i % 2 == 0) {
-      //   yPoint = 400;
-      // }
-      const yPoint = i > 1 && i < 18 ? Math.random() * 400 : 0;
+      let yPoint = 0;
+      if (i % 2 == 0) {
+        yPoint = 400;
+      }
+      // const yPoint = i > 1 && i < 18 ? Math.random() * 400 : 0;
       // const xPoint = i > 2 && i < 48 ? Math.random() * 200 : 0;
       points.push(new THREE.Vector3(0, yPoint, -325 * i));
     }
-    return new THREE.CatmullRomCurve3(points);
+
+    // Create the CatmullRomCurve3
+    const curve = new THREE.CatmullRomCurve3(points);
+
+    // Function to get y-coordinate at a specific z-coordinate
+    const getYAtZ = (z: number) => {
+      // Normalize z to a value between 0 and 1
+      const t = Math.abs(z / points[points.length - 1].z);
+
+      // Get the point on the curve at normalized t
+      const point = curve.getPoint(t);
+
+      // Log the y-coordinate
+      console.log(`Y-coordinate at Z=${z}:`, point);
+    };
+
+    // Example: Log y-coordinate at z=2
+    getYAtZ(325);
+    return curve;
   }, []);
 
   const position = -10;
