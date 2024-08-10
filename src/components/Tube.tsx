@@ -1,20 +1,27 @@
-import { useMemo, useRef, useState, useEffect } from 'react';
+import { useMemo, useRef, useState, useEffect, useContext } from 'react';
 import * as THREE from 'three';
 import { GradientTexture } from '@react-three/drei';
+import { AppContext } from '../context/AppContext';
 
 interface TubeProps {
   rotation: Number;
-  playerPosition: Number;
+  playerPositionZ: Number;
+  playerPositionY: Number;
 }
 
 interface TunnelProps {
   curve: any;
   position: Number;
   rotation: Number;
-  playerPosition: Number;
+  playerPositionZ: Number;
 }
 
-const Tunnel = ({ curve, position, rotation, playerPosition }: TunnelProps) => {
+const Tunnel = ({
+  curve,
+  position,
+  rotation,
+  playerPositionZ,
+}: TunnelProps) => {
   const tubeRef = useRef();
 
   const [stops, setStops] = useState([0, 0.005, 0.015, 0.02, 0.025, 1]);
@@ -47,14 +54,14 @@ const Tunnel = ({ curve, position, rotation, playerPosition }: TunnelProps) => {
   // Make colors follow player position
   useEffect(() => {
     const updatedStops = [0, 0.005, 0.015, 0.02, 0.025, 1].map((el) => {
-      return el + playerPosition / 6050 >= 1
+      return el + playerPositionZ / 6050 >= 1
         ? 1
-        : el + playerPosition / 6050 <= 0
+        : el + playerPositionZ / 6050 <= 0
         ? 0
-        : el + playerPosition / 6050;
+        : el + playerPositionZ / 6050;
     });
     setStops(updatedStops);
-  }, [playerPosition]);
+  }, [playerPositionZ]);
 
   return (
     <group>
@@ -92,24 +99,46 @@ const Tunnel = ({ curve, position, rotation, playerPosition }: TunnelProps) => {
   );
 };
 
-function Tube({ rotation, playerPosition }: TubeProps) {
-  // Create a curve based on the points
-  const curve = useMemo(() => {
+function Tube({ rotation, playerPositionZ, playerPositionY }: TubeProps) {
+  const appContext = useContext(AppContext);
+
+  const toggleGameStart = appContext?.toggleGameStart;
+
+  // Create curve points
+  const points = useMemo(() => {
     let points = [];
 
     // Define points along Z axis
     for (let i = 0; i < 20; i += 1) {
       let yPoint = 0;
-      if (i % 2 == 0) {
-        yPoint = 400;
+      if (i > 1 && i < 18 && i % 2 !== 0) {
+        yPoint = Math.random() * -200;
+      } else if (i > 1 && i < 18 && i % 2 === 0) {
+        yPoint = Math.random() * 200;
       }
       // const yPoint = i > 1 && i < 18 ? Math.random() * 400 : 0;
       // const xPoint = i > 2 && i < 48 ? Math.random() * 200 : 0;
       points.push(new THREE.Vector3(0, yPoint, -325 * i));
     }
+    return points;
+  }, []);
 
-    // Create the CatmullRomCurve3
+  // Create curve from points
+  const curve = useMemo(() => {
     const curve = new THREE.CatmullRomCurve3(points);
+    return curve;
+  }, []);
+
+  // Get y-coordinate of curve from z-axis of player
+  useEffect(() => {
+    // Function to get difference between numbers
+    function diff(num1: number, num2: number) {
+      if (num1 > num2) {
+        return num1 - num2;
+      } else {
+        return num2 - num1;
+      }
+    }
 
     // Function to get y-coordinate at a specific z-coordinate
     const getYAtZ = (z: number) => {
@@ -118,15 +147,28 @@ function Tube({ rotation, playerPosition }: TubeProps) {
 
       // Get the point on the curve at normalized t
       const point = curve.getPoint(t);
-
-      // Log the y-coordinate
-      console.log(`Y-coordinate at Z=${z}:`, point);
+      return point.y;
     };
+    // Get y-coordinate of curve at z-coordinate of player
+    const curveYCoord = getYAtZ(6200 - playerPositionZ);
+    // console.log('curveYCoord', curveYCoord, playerPositionY);
+    const test = diff(Math.abs(curveYCoord), Math.abs(playerPositionY));
+    // console.log('test', test);
+    if (test > 102) {
+      toggleGameStart(false);
+    }
 
-    // Example: Log y-coordinate at z=2
-    getYAtZ(325);
-    return curve;
-  }, []);
+    // console.log('curveYCoord', curveYCoord);
+    // console.log('playerPositionY', playerPositionY);
+    // if (curveYCoord - 90 > playerPositionY) {
+    //   console.log('game restart');
+    // }
+    // if (curveYCoord + 102 < playerPositionY) {
+    //   console.log('curveYCoord', curveYCoord);
+    //   console.log('playerPositionY', playerPositionY);
+    //   console.log('game restart');
+    // }
+  }, [playerPositionZ]);
 
   const position = -10;
 
@@ -135,7 +177,8 @@ function Tube({ rotation, playerPosition }: TubeProps) {
       curve={curve}
       rotation={rotation}
       position={position}
-      playerPosition={playerPosition}
+      playerPositionZ={playerPositionZ}
+      playerPositionY={playerPositionY}
     />
   );
 }

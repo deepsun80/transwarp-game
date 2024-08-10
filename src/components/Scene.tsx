@@ -13,7 +13,8 @@ function Scene() {
   const toggleGameStart = appContext?.toggleGameStart;
 
   const [timer, setTimer] = useState(2);
-  const [playerPosition, setPlayerPosition] = useState(0);
+  const [playerPositionZ, setPlayerPositionZ] = useState(0);
+  const [playerPositionY, setPlayerPositionY] = useState(0);
 
   useEffect(() => {
     if (!gameStart && timer > 0) {
@@ -36,7 +37,11 @@ function Scene() {
       {/* <Lights /> */}
 
       {/* Geometry */}
-      <Tube rotation={0} playerPosition={playerPosition} />
+      <Tube
+        rotation={0}
+        playerPositionZ={playerPositionZ}
+        playerPositionY={playerPositionY}
+      />
 
       <mesh>
         <sphereGeometry args={[50, 32, 16]} />
@@ -46,7 +51,8 @@ function Scene() {
       {gameStart ? (
         <Player
           startPosition={[0, 0, -6200]}
-          setPlayerPosition={setPlayerPosition}
+          setPlayerPositionZ={setPlayerPositionZ}
+          setPlayerPositionY={setPlayerPositionY}
         />
       ) : (
         <PlayerStatic startPosition={[0, 0, -6200]} />
@@ -57,17 +63,17 @@ function Scene() {
       {/* Optional */}
       {/* <OrbitControls /> */}
       <Environment preset='city' />
-      <Grid
-        sectionSize={3}
+      {/* <Grid
+        sectionSize={30}
         sectionColor={'white'}
         sectionThickness={1}
         cellSize={1}
         cellColor={'#ececec'}
         cellThickness={0.6}
         infiniteGrid
-        fadeDistance={100}
+        fadeDistance={10000}
         fadeStrength={5}
-      />
+      /> */}
     </>
   );
 }
