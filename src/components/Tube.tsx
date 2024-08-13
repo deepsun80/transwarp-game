@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 interface TubeProps {
@@ -27,6 +28,8 @@ interface TubeProps {
 // };
 
 function Tube({ rotation }: TubeProps) {
+  const [particleSize, setParticleSize] = useState(7);
+
   // Particle texture
   const circle = new THREE.TextureLoader().load('/circle.png');
 
@@ -41,13 +44,9 @@ function Tube({ rotation }: TubeProps) {
     return new THREE.CatmullRomCurve3(points);
   }, []);
 
-  // Create tube geometry -- useMemo?
+  // Create tube geometry
   const tubeGeometry = useMemo(() => {
-    return new THREE.TubeGeometry(path, 2000, 50, 64, false);
-  }, [path]);
-
-  const tubeGeometryTwo = useMemo(() => {
-    return new THREE.TubeGeometry(path, 2000, 50, 64, false);
+    return new THREE.TubeGeometry(path, 2000, 35, 64, false);
   }, [path]);
 
   // const twistAngle = Math.PI / 100; // Twist angle
@@ -66,19 +65,6 @@ function Tube({ rotation }: TubeProps) {
     );
     return tubeBufferGeom;
   }, [tubeGeometry]);
-
-  const tubeBufferTwo = useMemo(() => {
-    const tubeBufferGeom = new THREE.BufferGeometry();
-    // Add tube geometry points to tube buffer
-    tubeBufferGeom.setAttribute(
-      'position',
-      new THREE.Float32BufferAttribute(
-        tubeGeometryTwo.attributes.position.array,
-        3
-      )
-    );
-    return tubeBufferGeom;
-  }, [tubeGeometryTwo]);
 
   // Step 3: Generate random points on the surface of the tube
   // const randomPoints = useMemo(() => {
@@ -175,16 +161,7 @@ function Tube({ rotation }: TubeProps) {
 
       <points args={[tubeBuffer]}>
         <pointsMaterial
-          size={10}
-          sizeAttenuation={true}
-          map={circle}
-          alphaTest={0.5}
-          transparent={true}
-        />
-      </points>
-      <points args={[tubeBufferTwo]} position-z={20}>
-        <pointsMaterial
-          size={10}
+          size={particleSize}
           sizeAttenuation={true}
           map={circle}
           alphaTest={0.5}
