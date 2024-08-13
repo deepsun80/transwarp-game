@@ -1,42 +1,34 @@
 import { useMemo } from 'react';
-import { useLoader } from '@react-three/fiber';
 import * as THREE from 'three';
-import patternOne from '../assets/pattern1.png';
 
 interface TubeProps {
   rotation: Number;
 }
 
 function Tube({ rotation }: TubeProps) {
-  const pointImg = useLoader(THREE.TextureLoader, patternOne);
+  // Particle texture
+  const circle = new THREE.TextureLoader().load('/circle.png');
 
-  // Create a curve based on the points
-  // const [curve] = useState(() => {
-  //   // Create an empty array to stores the points
-  //   let points = [];
-  //   // Define points along Z axis
-  //   for (let i = 0; i < 50; i += 1) {
-  //     const yPoint = i > 2 && i < 48 ? Math.random() * 300 : 0;
-  //     points.push(new THREE.Vector3(0, yPoint, -150 * i));
-  //   }
-  //   return new THREE.CatmullRomCurve3(points);
-  // });
-  // Create the tube path
-  const path = useMemo(() => {
-    let points = [];
-    // Define points along Z axis
-    for (let i = 0; i < 50; i += 1) {
-      const yPoint = i > 2 && i < 48 ? Math.random() * 300 : 0;
-      points.push(new THREE.Vector3(0, yPoint, -150 * i));
-    }
-    return new THREE.CatmullRomCurve3(points);
-  }, []);
+  // create buffer geometry for tube points
+  const tubeBuffer = new THREE.BufferGeometry();
 
-  // Create the tube geometry
-  // const tubeGeometry = useMemo(
-  //   () => new THREE.TubeGeometry(path, 1000, 50, 50, false),
-  //   [path]
-  // );
+  // Create the tube path -- useMemo?
+  let points = [];
+  // Define points along Z axis
+  for (let i = 0; i < 50; i += 1) {
+    const yPoint = i > 2 && i < 48 ? Math.random() * 300 : 0;
+    points.push(new THREE.Vector3(0, yPoint, -150 * i));
+  }
+  const path = new THREE.CatmullRomCurve3(points);
+
+  // Create tube geometry -- useMemo?
+  const tubeGeometry = new THREE.TubeGeometry(path, 2000, 50, 70, false);
+
+  // Add tube geometry points to tube buffer
+  tubeBuffer.setAttribute(
+    'position',
+    new THREE.Float32BufferAttribute(tubeGeometry.attributes.position.array, 3)
+  );
 
   // Create the ripple effect shader material
   // const material = useMemo(() => {
@@ -80,31 +72,28 @@ function Tube({ rotation }: TubeProps) {
 
   return (
     <group>
-      <mesh
-        // geometry={tubeGeometry}
+      {/* <mesh
+        geometry={tubeGeometry}
         // material={material}
-        rotation-y={rotation}
-        position-z={-30}
+        // rotation-y={rotation}
+        // position-z={-30}
       >
         <tubeGeometry args={[path, 1000, 55, 50, false]} />
         <meshStandardMaterial
-          color={'black'}
+          color={'lightgrey'}
           side={2}
-          transparent
-          opacity={0.3}
+          // transparent
+          // opacity={0.3}
         />
-      </mesh>
-      <points rotation-y={rotation} position-z={-30}>
-        <tubeGeometry args={[path, 1000, 50, 50, false]} />
+      </mesh> */}
+
+      <points args={[tubeBuffer]}>
         <pointsMaterial
-          size={3}
-          sizeAttenuation
-          color={'white'}
-          // attach='material'
-          // map={pointImg}
-          // transparent={false}
-          // alphaTest={0.5}
-          // opacity={1}
+          size={10}
+          sizeAttenuation={true}
+          map={circle}
+          alphaTest={0.5}
+          transparent={true}
         />
       </points>
     </group>
