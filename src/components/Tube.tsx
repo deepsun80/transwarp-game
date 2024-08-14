@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
@@ -6,51 +6,44 @@ interface TubeProps {
   rotation: Number;
 }
 
-// Twist function from the article
-// const applyTwist = (geometry, angle) => {
-//   const quaternion = new THREE.Quaternion();
-//   const positionAttribute = geometry.attributes.position;
-
-//   const vector = new THREE.Vector3();
-//   for (let i = 0; i < positionAttribute.count; i++) {
-//     vector.fromBufferAttribute(positionAttribute, i);
-
-//     const yPos = vector.z;
-//     const twistAngle = angle * yPos;
-
-//     quaternion.setFromAxisAngle(new THREE.Vector3(0, 0, 1), twistAngle);
-//     vector.applyQuaternion(quaternion);
-
-//     positionAttribute.setXYZ(i, vector.x, vector.y, vector.z);
-//   }
-
-//   geometry.attributes.position.needsUpdate = true;
-// };
-
 function Tube({ rotation }: TubeProps) {
-  const [particleSize, setParticleSize] = useState(7);
+  const [particleSize, setParticleSize] = useState(3);
+  // const [particleSizeOne, setParticleSizeTwo] = useState(12);
+
+  const direction = useRef(1); // 1 for growing, -1 for shrinking
+  const progress = useRef(0); // Track the progress of the animation between 0 and 1
+  const speed = 0.007; // Speed of the progress change
 
   // Particle texture
-  const circle = new THREE.TextureLoader().load('/circle.png');
+  const circle = new THREE.TextureLoader().load('/circle2.png');
 
   // Create the tube path -- useMemo?
   const path = useMemo(() => {
     let points = [];
-    // Define points along Z axis
-    for (let i = 0; i < 50; i += 1) {
-      const yPoint = i > 2 && i < 48 ? Math.random() * 300 : 0;
-      points.push(new THREE.Vector3(0, yPoint, -150 * i));
+
+    for (let i = 0; i < 20; i += 1) {
+      let yPoint = 0;
+      if (i > 1 && i < 18 && i % 2 !== 0) {
+        yPoint = Math.random() * -200;
+      } else if (i > 1 && i < 18 && i % 2 === 0) {
+        yPoint = Math.random() * 200;
+      }
+      // const yPoint = i > 1 && i < 18 ? Math.random() * 400 : 0;
+      // const xPoint = i > 2 && i < 48 ? Math.random() * 200 : 0;
+      points.push(new THREE.Vector3(0, yPoint, -325 * i));
     }
+
     return new THREE.CatmullRomCurve3(points);
   }, []);
 
   // Create tube geometry
   const tubeGeometry = useMemo(() => {
-    return new THREE.TubeGeometry(path, 2000, 35, 64, false);
+    return new THREE.TubeGeometry(path, 2000, 47, 64, false);
   }, [path]);
 
-  // const twistAngle = Math.PI / 100; // Twist angle
-  // applyTwist(tubeGeometry, twistAngle);
+  const tubeGeometryTwo = useMemo(() => {
+    return new THREE.TubeGeometry(path, 2000, 50, 64, false);
+  }, [path]);
 
   // create buffer geometry for tube points
   const tubeBuffer = useMemo(() => {
@@ -66,81 +59,37 @@ function Tube({ rotation }: TubeProps) {
     return tubeBufferGeom;
   }, [tubeGeometry]);
 
-  // Step 3: Generate random points on the surface of the tube
-  // const randomPoints = useMemo(() => {
-  //   const points = [];
-  //   const radius = tubeGeometry.parameters.radius;
-  //   const path = tubeGeometry.parameters.path;
+  const tubeBufferTwo = useMemo(() => {
+    const tubeBufferGeom = new THREE.BufferGeometry();
+    // Add tube geometry points to tube buffer
+    tubeBufferGeom.setAttribute(
+      'position',
+      new THREE.Float32BufferAttribute(
+        tubeGeometryTwo.attributes.position.array,
+        3
+      )
+    );
+    return tubeBufferGeom;
+  }, [tubeGeometryTwo]);
 
-  //   for (let i = 0; i < 100; i++) {
-  //     const u = Math.random();
-  //     const v = Math.random();
+  useFrame(() => {
+    // Increment or decrement progress based on direction
+    progress.current += speed * direction.current;
 
-  //     // Calculate a point along the curve
-  //     const pointOnCurve = path.getPointAt(u);
-  //     const tangent = path.getTangentAt(u);
-  //     const normal = new THREE.Vector3();
-  //     const binormal = new THREE.Vector3();
+    // Use sine wave on both sides to ensure ease-in and ease-out at both ends
+    const easedProgress = 0.5 - 0.5 * Math.cos(Math.PI * progress.current);
+    const newRadius = THREE.MathUtils.lerp(3, 12, easedProgress);
+    // const newRadiusTwo = THREE.MathUtils.lerp(12, 8, easedProgress);
 
-  //     // Create the normal and binormal vectors
-  //     path.computeFrenetFrames(1, true);
-  //     normal.crossVectors(tangent, new THREE.Vector3(0, 1, 0)).normalize();
-  //     binormal.crossVectors(tangent, normal).normalize();
+    setParticleSize(newRadius);
+    // setParticleSizeTwo(newRadiusTwo);
 
-  //     const angle = v * Math.PI * 2;
-  //     const direction = normal
-  //       .clone()
-  //       .multiplyScalar(Math.cos(angle))
-  //       .add(binormal.clone().multiplyScalar(Math.sin(angle)));
-  //     direction.multiplyScalar(radius);
-
-  //     // Final random point on the tube's surface
-  //     const randomPoint = pointOnCurve.clone().add(direction);
-  //     points.push(randomPoint);
-  //   }
-
-  //   return points;
-  // }, [tubeGeometry]);
-
-  // Create the ripple effect shader material
-  // const material = useMemo(() => {
-  //   return new THREE.ShaderMaterial({
-  //     uniforms: {
-  //       time: { value: 0 },
-  //     },
-  //     vertexShader: `
-  //       varying vec2 vUv;
-  //       varying vec3 vPosition;
-  //       void main() {
-  //         vUv = uv;
-  //         vPosition = position;
-  //         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-  //       }
-  //     `,
-  //     fragmentShader: `
-  //       uniform float time;
-  //       varying vec2 vUv;
-  //       varying vec3 vPosition;
-  //       void main() {
-  //         float frequency = 1000.0;
-  //         float amplitude = 0.5;
-  //         float ripple = sin(frequency * vUv.x + time) * amplitude;
-  //         vec3 color = vec3(
-  //           0.5 + 0.5 * cos(3.141592653589793 * vUv.x + ripple + 0.0),
-  //           0.5 + 0.5 * cos(3.141592653589793 * vUv.x + ripple + 2.0),
-  //           0.5 + 0.5 * cos(3.141592653589793 * vUv.x + ripple + 4.0)
-  //         );
-  //         gl_FragColor = vec4(color, 1.0);
-  //       }
-  //     `,
-  //     side: THREE.DoubleSide,
-  //   });
-  // }, []);
-
-  // // Update the time uniform in the shader material
-  // useFrame((state) => {
-  //   material.uniforms.time.value = state.clock.getElapsedTime() * 10;
-  // });
+    // Reverse direction when the animation completes a cycle
+    if (progress.current >= 1 || progress.current <= 0) {
+      direction.current *= -1;
+      progress.current = THREE.MathUtils.clamp(progress.current, 0, 1); // Ensure progress stays within bounds
+    }
+  });
 
   return (
     <group>
@@ -162,6 +111,16 @@ function Tube({ rotation }: TubeProps) {
       <points args={[tubeBuffer]}>
         <pointsMaterial
           size={particleSize}
+          sizeAttenuation={true}
+          map={circle}
+          alphaTest={0.5}
+          transparent={true}
+        />
+      </points>
+
+      <points args={[tubeBufferTwo]} position-z={-5}>
+        <pointsMaterial
+          size={13}
           sizeAttenuation={true}
           map={circle}
           alphaTest={0.5}
