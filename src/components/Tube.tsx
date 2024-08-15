@@ -8,17 +8,10 @@ interface TubeProps {
 
 function Tube({ rotation }: TubeProps) {
   const [particleSize, setParticleSize] = useState(3);
+  const [color, setColor] = useState(new THREE.Color('white'));
   // const [particleSizeOne, setParticleSizeTwo] = useState(12);
 
   const pointsRef = useRef();
-
-  const colors = ['white', 'yellow', 'red', 'blue'].map(
-    (c) => new THREE.Color(c)
-  );
-  // const currentColor = new THREE.Color('white');
-  // let colorIndex = 0;
-  let colorIndex = 0;
-  const currentColor = new THREE.Color(colors[colorIndex]);
 
   const direction = useRef(1); // 1 for growing, -1 for shrinking
   const progress = useRef(0); // Track the progress of the animation between 0 and 1
@@ -32,14 +25,14 @@ function Tube({ rotation }: TubeProps) {
     let points = [];
 
     for (let i = 0; i < 20; i += 1) {
-      let yPoint = 0;
-      if (i > 1 && i < 18 && i % 2 !== 0) {
-        yPoint = Math.random() * -200;
-      } else if (i > 1 && i < 18 && i % 2 === 0) {
-        yPoint = Math.random() * 200;
-      }
-      // const yPoint = i > 1 && i < 18 ? Math.random() * 400 : 0;
-      // const xPoint = i > 2 && i < 48 ? Math.random() * 200 : 0;
+      // let yPoint = 0;
+      // if (i > 1 && i < 18 && i % 2 !== 0) {
+      //   yPoint = Math.random() * -200;
+      // } else if (i > 1 && i < 18 && i % 2 === 0) {
+      //   yPoint = Math.random() * 200;
+      // }
+      const yPoint = i > 1 && i < 18 ? Math.random() * 400 : 0;
+      // const xPoint = i > 1 && i < 18 ? Math.random() * 400 : 0;
       points.push(new THREE.Vector3(0, yPoint, -325 * i));
     }
 
@@ -48,11 +41,11 @@ function Tube({ rotation }: TubeProps) {
 
   // Create tube geometry
   const tubeGeometry = useMemo(() => {
-    return new THREE.TubeGeometry(path, 2000, 47, 64, false);
+    return new THREE.TubeGeometry(path, 2000, 35, 64, false);
   }, [path]);
 
   const tubeGeometryTwo = useMemo(() => {
-    return new THREE.TubeGeometry(path, 2000, 50, 64, false);
+    return new THREE.TubeGeometry(path, 2000, 55, 64, false);
   }, [path]);
 
   // create buffer geometry for tube points
@@ -94,6 +87,25 @@ function Tube({ rotation }: TubeProps) {
     setParticleSize(newRadius);
     // setParticleSizeTwo(newRadiusTwo);
 
+    // Animate the color based on the size
+    const colorProgress = (newRadius - 3) / 9; // Progress from 0 to 1
+    const color1 = new THREE.Color('lightblue');
+    const color2 = new THREE.Color('orange');
+    const color3 = new THREE.Color('yellow');
+    const color4 = new THREE.Color('white');
+
+    // Determine color based on the size progress
+    let interpolatedColor;
+    if (colorProgress <= 0.25) {
+      interpolatedColor = color1.lerp(color2, colorProgress * 4); // White to Yellow
+    } else if (colorProgress <= 0.5) {
+      interpolatedColor = color2.lerp(color3, (colorProgress - 0.25) * 4); // Yellow to Red
+    } else if (colorProgress <= 0.75) {
+      interpolatedColor = color3.lerp(color4, (colorProgress - 0.5) * 4); // Red to Blue
+    }
+
+    setColor(interpolatedColor);
+
     // Reverse direction when the animation completes a cycle
     if (progress.current >= 1 || progress.current <= 0) {
       direction.current *= -1;
@@ -101,31 +113,31 @@ function Tube({ rotation }: TubeProps) {
     }
   });
 
-  useFrame((state, delta) => {
-    const nextColorIndex = (colorIndex + 1) % colors.length;
-    const nextColor = colors[nextColorIndex];
+  // useFrame((state, delta) => {
+  //   const nextColorIndex = (colorIndex + 1) % colors.length;
+  //   const nextColor = colors[nextColorIndex];
 
-    // Interpolate between current color and next color
-    currentColor.lerp(nextColor, delta * 2);
+  //   // Interpolate between current color and next color
+  //   currentColor.lerp(nextColor, delta * 2);
 
-    // Update the PointsMaterial color
-    if (pointsRef.current) {
-      pointsRef.current.material.color.set(currentColor);
-    }
-    console.log('currentColor', currentColor);
-    console.log('nextColor', nextColor);
-    // When the interpolation is close to complete, switch to the next color
-    // Check if the colors have matched closely enough to switch
-    if (
-      Math.abs(currentColor.r - nextColor.r) < 0.01 &&
-      Math.abs(currentColor.g - nextColor.g) < 0.01 &&
-      Math.abs(currentColor.b - nextColor.b) < 0.01
-    ) {
-      console.log('check');
-      colorIndex = nextColorIndex;
-      currentColor.copy(nextColor); // Set the color to the exact next color
-    }
-  });
+  //   // Update the PointsMaterial color
+  //   if (pointsRef.current) {
+  //     pointsRef.current.material.color.set(currentColor);
+  //   }
+  //   console.log('currentColor', currentColor);
+  //   console.log('nextColor', nextColor);
+  //   // When the interpolation is close to complete, switch to the next color
+  //   // Check if the colors have matched closely enough to switch
+  //   if (
+  //     Math.abs(currentColor.r - nextColor.r) < 0.01 &&
+  //     Math.abs(currentColor.g - nextColor.g) < 0.01 &&
+  //     Math.abs(currentColor.b - nextColor.b) < 0.01
+  //   ) {
+  //     console.log('check');
+  //     colorIndex = nextColorIndex;
+  //     currentColor.copy(nextColor); // Set the color to the exact next color
+  //   }
+  // });
 
   return (
     <group>
@@ -151,18 +163,19 @@ function Tube({ rotation }: TubeProps) {
           map={circle}
           alphaTest={0.5}
           transparent={true}
+          color={color}
         />
       </points>
 
-      <points args={[tubeBufferTwo]} position-z={-5}>
+      {/* <points args={[tubeBufferTwo]} position-z={-5}>
         <pointsMaterial
-          size={13}
+          size={10}
           sizeAttenuation={true}
           map={circle}
           alphaTest={0.5}
           transparent={true}
         />
-      </points>
+      </points> */}
     </group>
   );
 }
