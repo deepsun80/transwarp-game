@@ -15,7 +15,7 @@ function Tube({ rotation }: TubeProps) {
   const speed = 0.007; // Speed of the progress change
 
   // Particle texture
-  const circle = new THREE.TextureLoader().load('/circle2.png');
+  const circle = new THREE.TextureLoader().load('/circle2sm.png');
 
   // Create the tube path -- useMemo?
   const path = useMemo(() => {
