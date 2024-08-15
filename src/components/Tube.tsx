@@ -62,7 +62,11 @@ function Tube({ rotation }: TubeProps) {
 
   // Create tube geometry
   const tubeGeometry = useMemo(() => {
-    return new THREE.TubeGeometry(path, 2000, 35, 64, false);
+    const baseGeometry = new THREE.TubeGeometry(path, 2000, 35, 64, false);
+
+    applyTwist(baseGeometry, twistAngle);
+
+    return baseGeometry;
   }, [path]);
 
   const tubeGeometryTwo = useMemo(() => {
