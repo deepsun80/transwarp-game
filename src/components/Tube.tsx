@@ -6,6 +6,27 @@ interface TubeProps {
   rotation: Number;
 }
 
+// Twist function from the article
+const applyTwist = (geometry, angle) => {
+  const quaternion = new THREE.Quaternion();
+  const positionAttribute = geometry.attributes.position;
+
+  const vector = new THREE.Vector3();
+  for (let i = 0; i < positionAttribute.count; i++) {
+    vector.fromBufferAttribute(positionAttribute, i);
+
+    const yPos = vector.z;
+    const twistAngle = angle * yPos;
+
+    quaternion.setFromAxisAngle(new THREE.Vector3(0, 0, 1), twistAngle);
+    vector.applyQuaternion(quaternion);
+
+    positionAttribute.setXYZ(i, vector.x, vector.y, vector.z);
+  }
+
+  geometry.attributes.position.needsUpdate = true;
+};
+
 function Tube({ rotation }: TubeProps) {
   const [particleSize, setParticleSize] = useState(3);
   const [color, setColor] = useState(new THREE.Color('white'));
