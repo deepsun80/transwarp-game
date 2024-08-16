@@ -17,7 +17,7 @@ function Scene() {
         <meshStandardMaterial color={'lightgrey'} />
       </mesh>
 
-      <Player startPosition={[0, 0, -6000]} />
+      <Player startPosition={[0, 0, -6190]} />
 
       {/* Optional */}
       {/* <OrbitControls /> */}
