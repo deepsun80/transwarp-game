@@ -52,7 +52,7 @@ function Tube({ rotation }: TubeProps) {
       // } else if (i > 1 && i < 18 && i % 2 === 0) {
       //   yPoint = Math.random() * 200;
       // }
-      const yPoint = i > 1 && i < 18 ? Math.random() * 400 : 0;
+      const yPoint = i > 1 && i < 18 ? Math.random() * 500 : 0;
       // const xPoint = i > 1 && i < 18 ? Math.random() * 400 : 0;
       points.push(new THREE.Vector3(0, yPoint, -325 * i));
     }
@@ -62,16 +62,17 @@ function Tube({ rotation }: TubeProps) {
 
   // Create tube geometry
   const tubeGeometry = useMemo(() => {
-    const baseGeometry = new THREE.TubeGeometry(path, 2000, 35, 64, false);
+    const baseGeometry = new THREE.TubeGeometry(path, 1000, 35, 64, false);
+    const twistAngle = Math.PI / 500; // Twist angle
 
-    applyTwist(baseGeometry, twistAngle);
+    // applyTwist(baseGeometry, twistAngle);
 
     return baseGeometry;
   }, [path]);
 
-  const tubeGeometryTwo = useMemo(() => {
-    return new THREE.TubeGeometry(path, 2000, 55, 64, false);
-  }, [path]);
+  // const tubeGeometryTwo = useMemo(() => {
+  //   return new THREE.TubeGeometry(path, 2000, 55, 64, false);
+  // }, [path]);
 
   // create buffer geometry for tube points
   const tubeBuffer = useMemo(() => {
@@ -87,18 +88,18 @@ function Tube({ rotation }: TubeProps) {
     return tubeBufferGeom;
   }, [tubeGeometry]);
 
-  const tubeBufferTwo = useMemo(() => {
-    const tubeBufferGeom = new THREE.BufferGeometry();
-    // Add tube geometry points to tube buffer
-    tubeBufferGeom.setAttribute(
-      'position',
-      new THREE.Float32BufferAttribute(
-        tubeGeometryTwo.attributes.position.array,
-        3
-      )
-    );
-    return tubeBufferGeom;
-  }, [tubeGeometryTwo]);
+  // const tubeBufferTwo = useMemo(() => {
+  //   const tubeBufferGeom = new THREE.BufferGeometry();
+  //   // Add tube geometry points to tube buffer
+  //   tubeBufferGeom.setAttribute(
+  //     'position',
+  //     new THREE.Float32BufferAttribute(
+  //       tubeGeometryTwo.attributes.position.array,
+  //       3
+  //     )
+  //   );
+  //   return tubeBufferGeom;
+  // }, [tubeGeometryTwo]);
 
   useFrame(() => {
     // Increment or decrement progress based on direction
