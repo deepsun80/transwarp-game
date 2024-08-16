@@ -32,8 +32,6 @@ function Tube({ rotation }: TubeProps) {
   const [color, setColor] = useState(new THREE.Color('white'));
   // const [particleSizeOne, setParticleSizeTwo] = useState(12);
 
-  const pointsRef = useRef();
-
   const direction = useRef(1); // 1 for growing, -1 for shrinking
   const progress = useRef(0); // Track the progress of the animation between 0 and 1
   const speed = 0.007; // Speed of the progress change
@@ -139,32 +137,6 @@ function Tube({ rotation }: TubeProps) {
     }
   });
 
-  // useFrame((state, delta) => {
-  //   const nextColorIndex = (colorIndex + 1) % colors.length;
-  //   const nextColor = colors[nextColorIndex];
-
-  //   // Interpolate between current color and next color
-  //   currentColor.lerp(nextColor, delta * 2);
-
-  //   // Update the PointsMaterial color
-  //   if (pointsRef.current) {
-  //     pointsRef.current.material.color.set(currentColor);
-  //   }
-  //   console.log('currentColor', currentColor);
-  //   console.log('nextColor', nextColor);
-  //   // When the interpolation is close to complete, switch to the next color
-  //   // Check if the colors have matched closely enough to switch
-  //   if (
-  //     Math.abs(currentColor.r - nextColor.r) < 0.01 &&
-  //     Math.abs(currentColor.g - nextColor.g) < 0.01 &&
-  //     Math.abs(currentColor.b - nextColor.b) < 0.01
-  //   ) {
-  //     console.log('check');
-  //     colorIndex = nextColorIndex;
-  //     currentColor.copy(nextColor); // Set the color to the exact next color
-  //   }
-  // });
-
   return (
     <group>
       {/* <mesh
@@ -182,7 +154,7 @@ function Tube({ rotation }: TubeProps) {
         />
       </mesh> */}
 
-      <points args={[tubeBuffer]} ref={pointsRef}>
+      <points args={[tubeBuffer]}>
         <pointsMaterial
           size={particleSize}
           sizeAttenuation={true}
