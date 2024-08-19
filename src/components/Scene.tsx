@@ -1,8 +1,12 @@
 import { Grid, OrbitControls, Environment } from '@react-three/drei';
+import { extend } from '@react-three/fiber';
+import { SimpleShaderMaterial } from './SimpleShaderMaterial';
 
 // import Lights from './Lights';
-import Tube from './Tube';
-import Player from './Player';
+
+extend({
+  SimpleShaderMaterial,
+});
 
 function Scene() {
   return (
@@ -10,19 +14,20 @@ function Scene() {
       {/* <Lights /> */}
 
       {/* Geometry */}
-      <Tube rotation={0} />
-
-      <mesh>
-        <sphereGeometry args={[45, 32, 16]} />
-        <meshStandardMaterial color={'lightgrey'} />
-      </mesh>
-
-      <Player startPosition={[0, 0, -7385]} />
+      {Array.from({ length: 90 }).map((_, i) => (
+        <mesh key={i} position={[0, 0, -i * 0.2]}>
+          <planeGeometry args={[3, 3]} />
+          <simpleShaderMaterial
+            uLevel={i / 30}
+            // ref={(ref) => (frameRefs.current['right01'] = ref)}
+          />
+        </mesh>
+      ))}
 
       {/* Optional */}
-      {/* <OrbitControls /> */}
-      <Environment preset='studio' />
-      <Grid
+      <OrbitControls />
+      <Environment preset='sunset' />
+      {/* <Grid
         sectionSize={3}
         sectionColor={'white'}
         sectionThickness={1}
@@ -32,7 +37,7 @@ function Scene() {
         infiniteGrid
         fadeDistance={100}
         fadeStrength={5}
-      />
+      /> */}
     </>
   );
 }
