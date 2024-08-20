@@ -1,6 +1,6 @@
 import { shaderMaterial } from '@react-three/drei';
 
-export const SimpleShaderMaterial = shaderMaterial(
+export const TunnelShader = shaderMaterial(
   {
     uTime: 0.0,
     uLevel: 0.0,
@@ -97,13 +97,13 @@ export const SimpleShaderMaterial = shaderMaterial(
     // float scene = sdCircle(uv, 0.2);
     // float scene = sdBox(uv, vec2(0.2));
     float scene = mix(
-      sdCircle(uv, 0.2),
-      // sdEquilateralTriangle(uv, 0.2),
+        sdCircle(uv, 0.2),
+        // sdEquilateralTriangle(uv, 0.2),
         // sdBox(uv, vec2(0.2)),
-      // sdPentagon(uv, 0.2),
-      sdHexagon(uv, 0.2),
-      // sdOctogon(uv, 0.2),
-      2. * (sin(uLevel * PI * 3.) + 1.)
+        // sdPentagon(uv, 0.2),
+        sdHexagon(uv, 0.2),
+        // sdOctogon(uv, 0.2),
+        2. * (sin(uLevel * PI * 3.) + 1.)
     );
 
     float dd = scene;

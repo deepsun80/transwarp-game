@@ -1,15 +1,17 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
 import { extend } from '@react-three/fiber';
-import { SimpleShaderMaterial } from './SimpleShaderMaterial';
+
+import { TunnelShader } from './TunnelShader';
 // import { AppContext } from '../context/AppContext';
 
 extend({
-  SimpleShaderMaterial,
+  TunnelShader,
 });
 
 interface TubeProps {
   rotation: Number;
+  planesRef: any;
 }
 
 interface TunnelProps {
@@ -17,9 +19,16 @@ interface TunnelProps {
   count: number;
   position: Number;
   rotation: Number;
+  planesRef: any;
 }
 
-const Tunnel = ({ curve, count, position, rotation }: TunnelProps) => {
+const Tunnel = ({
+  curve,
+  count,
+  position,
+  rotation,
+  planesRef,
+}: TunnelProps) => {
   // Sample points on the curve
   const points = useMemo(() => curve.getPoints(count), [curve, count]);
 
@@ -28,18 +37,26 @@ const Tunnel = ({ curve, count, position, rotation }: TunnelProps) => {
       {points.map((point: any, index: number) => (
         <mesh key={index} position={point.toArray()} rotation={[0, Math.PI, 0]}>
           <planeGeometry args={[200, 200]} />
-          <simpleShaderMaterial
-            uLevel={index / 120}
-            // ref={(ref) => (frameRefs.current['right01'] = ref)}
-          />
+          <tunnelShader uLevel={index / 120} />
           {/* <meshBasicMaterial color='hotpink' side={THREE.FrontSide} /> */}
+        </mesh>
+      ))}
+      {points.map((point: any, index: number) => (
+        <mesh
+          key={index}
+          ref={(el) => (planesRef.current[index] = el)}
+          position={point.toArray()}
+          rotation={[0, Math.PI, 0]}
+        >
+          <ringGeometry args={[50, 75, 5]} />
+          <meshBasicMaterial color='black' wireframe />
         </mesh>
       ))}
     </group>
   );
 };
 
-function Tube({ rotation }: TubeProps) {
+function Tube({ rotation, planesRef }: TubeProps) {
   // const appContext = useContext(AppContext);
   // const toggleGameStart = appContext?.toggleGameStart;
 
@@ -76,6 +93,7 @@ function Tube({ rotation }: TubeProps) {
       count={1000}
       rotation={rotation}
       position={position}
+      planesRef={planesRef}
     />
   );
 }
