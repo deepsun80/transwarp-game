@@ -1,22 +1,20 @@
 import { useRef, useState, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { useKeyboardControls, useHelper } from '@react-three/drei';
+import { useKeyboardControls } from '@react-three/drei';
 import { Controls, Speed } from '../helpers';
 
 import * as THREE from 'three';
 
 interface PlayerProps {
   startPosition: number[];
-  setPlayerRef: (ref: any) => void;
+  setPlayerYPos: (ref: any) => void;
 }
 
-function Player({ startPosition, setPlayerRef }: PlayerProps) {
+function Player({ startPosition, setPlayerYPos }: PlayerProps) {
   const playerRef = useRef(null);
   const container = useRef();
   const cameraTarget = useRef();
   const cameraPosition = useRef();
-
-  useHelper(playerRef, THREE.Box3Helper, 'red');
 
   const cameraWorldPosition = useRef(new THREE.Vector3());
   const cameraLookAtWorldPosition = useRef(new THREE.Vector3());
@@ -28,12 +26,6 @@ function Player({ startPosition, setPlayerRef }: PlayerProps) {
     (state) => state[Controls.forward]
   );
   const backPressed = useKeyboardControls((state) => state[Controls.back]);
-
-  useEffect(() => {
-    if (playerRef?.current) {
-      setPlayerRef(playerRef.current);
-    }
-  }, [playerRef?.current]);
 
   // Player and camera rotation based on mouse pointer
   useFrame(({ pointer }) => {

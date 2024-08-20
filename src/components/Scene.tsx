@@ -17,11 +17,9 @@ function Scene() {
   // const toggleGameStart = appContext?.toggleGameStart;
 
   // const [timer, setTimer] = useState(2);
-  const [playerRef, setPlayerRef] = useState(null);
+  const [playerYPos, setPlayerYPos] = useState(0);
   const planesRef = useRef([]);
 
-  console.log('playerRef', playerRef);
-  console.log('planesRef', planesRef);
   // useEffect(() => {
   //   if (!gameStart && timer > 0) {
   //     setTimeout(() => {
@@ -38,19 +36,11 @@ function Scene() {
   //   }
   // }, [timer]);
 
-  useFrame(() => {
-    if (playerRef && planesRef?.current?.length) {
-      // Check for intersections with planes
-      planesRef.current.forEach((plane: any, index: number) => {
-        const box = new THREE.Box3().setFromObject(playerRef);
-        const planeBox = new THREE.Box3().setFromObject(plane);
-
-        if (box.intersectsBox(planeBox)) {
-          console.log(`intersected with plane ${index + 1}`);
-        }
-      });
-    }
-  });
+  // useFrame(() => {
+  //   if (playerRef) {
+  //     console.log(playerRef.position.y);
+  //   }
+  // });
 
   return (
     <>
@@ -64,7 +54,7 @@ function Scene() {
         <meshStandardMaterial color={'lightgrey'} />
       </mesh>
 
-      <Player startPosition={[0, 0, -6200]} setPlayerRef={setPlayerRef} />
+      <Player startPosition={[0, 0, -6200]} setPlayerYPos={setPlayerYPos} />
 
       {/* {!gameStart && <StartText timer={timer} />} */}
 
