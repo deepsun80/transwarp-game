@@ -7,15 +7,9 @@ import * as THREE from 'three';
 
 interface PlayerProps {
   startPosition: number[];
-  setPlayerPositionZ: (args: Number) => void;
-  setPlayerPositionY: (args: Number) => void;
 }
 
-function Player({
-  startPosition,
-  setPlayerPositionZ,
-  setPlayerPositionY,
-}: PlayerProps) {
+function Player({ startPosition }: PlayerProps) {
   const playerRef = useRef();
   const container = useRef();
   const cameraTarget = useRef();
@@ -75,14 +69,10 @@ function Player({
         container.current.position.add(forward.multiplyScalar(velocity.z));
 
         setAcc(acc + Acceleration);
-        setPlayerPositionZ(container.current.position.z);
-        setPlayerPositionY(container.current.position.y);
       } else {
         const velocity = new THREE.Vector3(0, 0, -PlayerSpeed);
         playerRef.current.getWorldDirection(forward);
         container.current.position.add(forward.multiplyScalar(velocity.z));
-        setPlayerPositionZ(container.current.position.z);
-        setPlayerPositionY(container.current.position.y);
       }
     } else if (container?.current && backPressed) {
       if (acc < PlayerSpeed) {
@@ -91,14 +81,10 @@ function Player({
         container.current.position.sub(forward.multiplyScalar(velocity.z));
 
         setAcc(acc + Acceleration);
-        setPlayerPositionZ(container.current.position.z);
-        setPlayerPositionY(container.current.position.y);
       } else {
         const velocity = new THREE.Vector3(0, 0, -PlayerSpeed);
         playerRef.current.getWorldDirection(forward);
         container.current.position.sub(forward.multiplyScalar(velocity.z));
-        setPlayerPositionZ(container.current.position.z);
-        setPlayerPositionY(container.current.position.y);
       }
     } else {
       setAcc(0);

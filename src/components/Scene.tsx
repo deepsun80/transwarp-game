@@ -13,8 +13,6 @@ function Scene() {
   const toggleGameStart = appContext?.toggleGameStart;
 
   const [timer, setTimer] = useState(2);
-  const [playerPositionZ, setPlayerPositionZ] = useState(0);
-  const [playerPositionY, setPlayerPositionY] = useState(0);
 
   useEffect(() => {
     if (!gameStart && timer > 0) {
@@ -37,11 +35,7 @@ function Scene() {
       {/* <Lights /> */}
 
       {/* Geometry */}
-      <Tube
-        rotation={0}
-        playerPositionZ={playerPositionZ}
-        playerPositionY={playerPositionY}
-      />
+      <Tube rotation={0} />
 
       <mesh>
         <sphereGeometry args={[50, 32, 16]} />
@@ -49,11 +43,7 @@ function Scene() {
       </mesh>
 
       {gameStart ? (
-        <Player
-          startPosition={[0, 0, -6200]}
-          setPlayerPositionZ={setPlayerPositionZ}
-          setPlayerPositionY={setPlayerPositionY}
-        />
+        <Player startPosition={[0, 0, -6200]} />
       ) : (
         <PlayerStatic startPosition={[0, 0, -6200]} />
       )}
