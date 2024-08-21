@@ -58,7 +58,7 @@ function Scene() {
       {/* {!gameStart && <StartText timer={timer} />} */}
 
       {/* Optional */}
-      <OrbitControls />
+      {/* <OrbitControls /> */}
       <Environment preset='city' />
       {/* <Grid
         sectionSize={30}

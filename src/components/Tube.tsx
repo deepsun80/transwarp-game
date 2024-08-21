@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
 import { extend } from '@react-three/fiber';
-import DonutHexagon from './DonutHexagon';
 
 import { TunnelShader } from './TunnelShader';
 // import { AppContext } from '../context/AppContext';
@@ -24,6 +23,9 @@ interface TunnelProps {
 const Tunnel = ({ curve, count, position, rotation }: TunnelProps) => {
   // Sample points on the curve
   const points = useMemo(() => curve.getPoints(count), [curve, count]);
+  const pointsDiv = useMemo(() => curve.getPoints(count / 10), [curve, count]);
+
+  console.log('pointsDiv', pointsDiv[0].toArray());
 
   return (
     <group position-z={position}>
@@ -35,24 +37,33 @@ const Tunnel = ({ curve, count, position, rotation }: TunnelProps) => {
         </mesh>
       ))}
       {points.map((point: any, index: number) => (
-        <mesh
-          key={index}
-          // ref={(el) => (planesRef.current[index] = el)}
-          position={point.toArray()}
-          rotation={[0, Math.PI, 0]}
-        >
-          <ringGeometry args={[50, 75, 5]} />
-          <meshBasicMaterial color='black' wireframe />
-        </mesh>
+        <group key={index}>
+          <mesh
+            // ref={(el) => (planesRef.current[index] = el)}
+            position={[
+              point.toArray()[0],
+              point.toArray()[1] + 40,
+              point.toArray()[2],
+            ]}
+            rotation={[Math.PI / 2, Math.PI, 0]}
+          >
+            <planeGeometry args={[50, 5]} />
+            <meshBasicMaterial color='white' wireframe />
+          </mesh>
+          <mesh
+            // ref={(el) => (planesRef.current[index] = el)}
+            position={[
+              point.toArray()[0],
+              point.toArray()[1] - 40,
+              point.toArray()[2],
+            ]}
+            rotation={[Math.PI / 2, Math.PI, 0]}
+          >
+            <planeGeometry args={[50, 5]} />
+            <meshBasicMaterial color='white' wireframe />
+          </mesh>
+        </group>
       ))}
-      {/* {points.map((point: any, index: number) => (
-        <DonutHexagon
-          key={index}
-          radius={45}
-          thickness={10}
-          groupPosition={point.toArray()}
-        />
-      ))} */}
     </group>
   );
 };
