@@ -7,10 +7,9 @@ import * as THREE from 'three';
 
 interface PlayerProps {
   startPosition: number[];
-  setPlayerYPos: (ref: any) => void;
 }
 
-function Player({ startPosition, setPlayerYPos }: PlayerProps) {
+function Player({ startPosition }: PlayerProps) {
   const playerRef = useRef(null);
   const container = useRef();
   const cameraTarget = useRef();

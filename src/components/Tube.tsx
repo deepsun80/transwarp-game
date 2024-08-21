@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
 import { extend } from '@react-three/fiber';
+import DonutHexagon from './DonutHexagon';
 
 import { TunnelShader } from './TunnelShader';
 // import { AppContext } from '../context/AppContext';
@@ -11,7 +12,6 @@ extend({
 
 interface TubeProps {
   rotation: Number;
-  planesRef: any;
 }
 
 interface TunnelProps {
@@ -19,16 +19,9 @@ interface TunnelProps {
   count: number;
   position: Number;
   rotation: Number;
-  planesRef: any;
 }
 
-const Tunnel = ({
-  curve,
-  count,
-  position,
-  rotation,
-  planesRef,
-}: TunnelProps) => {
+const Tunnel = ({ curve, count, position, rotation }: TunnelProps) => {
   // Sample points on the curve
   const points = useMemo(() => curve.getPoints(count), [curve, count]);
 
@@ -44,7 +37,7 @@ const Tunnel = ({
       {points.map((point: any, index: number) => (
         <mesh
           key={index}
-          ref={(el) => (planesRef.current[index] = el)}
+          // ref={(el) => (planesRef.current[index] = el)}
           position={point.toArray()}
           rotation={[0, Math.PI, 0]}
         >
@@ -52,11 +45,19 @@ const Tunnel = ({
           <meshBasicMaterial color='black' wireframe />
         </mesh>
       ))}
+      {/* {points.map((point: any, index: number) => (
+        <DonutHexagon
+          key={index}
+          radius={45}
+          thickness={10}
+          groupPosition={point.toArray()}
+        />
+      ))} */}
     </group>
   );
 };
 
-function Tube({ rotation, planesRef }: TubeProps) {
+function Tube({ rotation }: TubeProps) {
   // const appContext = useContext(AppContext);
   // const toggleGameStart = appContext?.toggleGameStart;
 
@@ -93,7 +94,6 @@ function Tube({ rotation, planesRef }: TubeProps) {
       count={1000}
       rotation={rotation}
       position={position}
-      planesRef={planesRef}
     />
   );
 }

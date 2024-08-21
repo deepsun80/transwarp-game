@@ -4,8 +4,8 @@ export const Controls = {
 };
 
 export const Speed = {
-  PlayerSpeed: 4,
-  Acceleration: 0.075,
+  PlayerSpeed: 5,
+  Acceleration: 0.1,
   // RotationSpeed: 0.5,
 };
 

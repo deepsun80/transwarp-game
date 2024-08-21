@@ -1,6 +1,6 @@
 import { useState, useContext, useRef } from 'react';
 import { Grid, OrbitControls, Environment } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 
 import * as THREE from 'three';
 
@@ -17,7 +17,6 @@ function Scene() {
   // const toggleGameStart = appContext?.toggleGameStart;
 
   // const [timer, setTimer] = useState(2);
-  const [playerYPos, setPlayerYPos] = useState(0);
   const planesRef = useRef([]);
 
   // useEffect(() => {
@@ -54,12 +53,12 @@ function Scene() {
         <meshStandardMaterial color={'lightgrey'} />
       </mesh>
 
-      <Player startPosition={[0, 0, -6200]} setPlayerYPos={setPlayerYPos} />
+      <Player startPosition={[0, 0, -6200]} />
 
       {/* {!gameStart && <StartText timer={timer} />} */}
 
       {/* Optional */}
-      {/* <OrbitControls /> */}
+      <OrbitControls />
       <Environment preset='city' />
       {/* <Grid
         sectionSize={30}
