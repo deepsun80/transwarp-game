@@ -1,15 +1,22 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useContext } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useKeyboardControls } from '@react-three/drei';
 import { Controls, Speed } from '../helpers';
+import { AppContext } from '../context/AppContext';
 
 import * as THREE from 'three';
 
 interface PlayerProps {
   startPosition: number[];
+  planesTopRef: React.RefObject<HTMLSelectElement>;
+  planesBottomRef: React.RefObject<HTMLSelectElement>;
 }
 
-function Player({ startPosition }: PlayerProps) {
+function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
+  const appContext = useContext(AppContext);
+  const gameStart = appContext?.gameStart;
+  const toggleGameStart = appContext?.toggleGameStart;
+
   const playerRef = useRef(null);
   const container = useRef();
   const cameraTarget = useRef();
@@ -20,6 +27,7 @@ function Player({ startPosition }: PlayerProps) {
   const cameraLookAt = useRef(new THREE.Vector3());
 
   const [acc, setAcc] = useState(0);
+  const [playerFreeze, setPlayerFreeze] = useState(false);
 
   const forwardPressed = useKeyboardControls(
     (state) => state[Controls.forward]
@@ -28,12 +36,15 @@ function Player({ startPosition }: PlayerProps) {
 
   // Player and camera rotation based on mouse pointer
   useFrame(({ pointer }) => {
+    // Freeze player before restarting
+    if (playerFreeze) return;
+
     // Set rotation of player to 0 when starting
-    // if (!gameStart && playerRef?.current) {
-    //   // container.current.rotation.x = THREE.MathUtils.degToRad(0);
-    //   playerRef.current.rotation.x = 0;
-    //   return;
-    // }
+    if (!gameStart && playerRef?.current) {
+      // container.current.rotation.x = THREE.MathUtils.degToRad(0);
+      playerRef.current.rotation.x = 0;
+      return;
+    }
 
     if (playerRef?.current) {
       playerRef.current.rotation.x = THREE.MathUtils.lerp(
@@ -51,12 +62,15 @@ function Player({ startPosition }: PlayerProps) {
 
   // Player movement and collision detection
   useFrame(() => {
+    // Freeze player before restarting
+    if (playerFreeze) return;
+
     // If game starting place container and player positions to start
-    // if (!gameStart && container?.current && playerRef?.current) {
-    //   // container.current.position.set(0, 0, 0);
-    //   // playerRef.current.position.set(0, 0, -6200);
-    //   return;
-    // }
+    if (!gameStart && container?.current && playerRef?.current) {
+      container.current.position.set(0, 0, 0);
+      playerRef.current.position.set(0, 0, -6200);
+      return;
+    }
 
     const { PlayerSpeed, Acceleration } = Speed;
     const forward = new THREE.Vector3();
@@ -102,6 +116,25 @@ function Player({ startPosition }: PlayerProps) {
 
       camera.lookAt(cameraLookAt.current);
     }
+  });
+
+  // Check if player intersects any of the collision boxes, and set game logic
+  useFrame(() => {
+    const combinedPlanes = [
+      ...planesTopRef.current,
+      ...planesBottomRef.current,
+    ];
+    combinedPlanes.forEach((plane: any, index: number) => {
+      const box = new THREE.Box3().setFromObject(playerRef.current);
+      const planeBox = new THREE.Box3().setFromObject(plane);
+      if (box.intersectsBox(planeBox)) {
+        setPlayerFreeze(true);
+
+        setTimeout(() => {
+          toggleGameStart(false);
+        }, 500);
+      }
+    });
   });
 
   return (

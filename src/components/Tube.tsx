@@ -3,7 +3,6 @@ import * as THREE from 'three';
 import { extend } from '@react-three/fiber';
 
 import { TunnelShader } from './TunnelShader';
-// import { AppContext } from '../context/AppContext';
 
 extend({
   TunnelShader,
@@ -11,6 +10,8 @@ extend({
 
 interface TubeProps {
   rotation: Number;
+  planesTopRef: React.RefObject<HTMLSelectElement>;
+  planesBottomRef: React.RefObject<HTMLSelectElement>;
 }
 
 interface TunnelProps {
@@ -18,17 +19,24 @@ interface TunnelProps {
   count: number;
   position: Number;
   rotation: Number;
+  planesTopRef: React.RefObject<HTMLSelectElement>;
+  planesBottomRef: React.RefObject<HTMLSelectElement>;
 }
 
-const Tunnel = ({ curve, count, position, rotation }: TunnelProps) => {
+const Tunnel = ({
+  curve,
+  count,
+  position,
+  rotation, // Use this to rotate each tube modules
+  planesTopRef,
+  planesBottomRef,
+}: TunnelProps) => {
   // Sample points on the curve
   const points = useMemo(() => curve.getPoints(count), [curve, count]);
-  const pointsDiv = useMemo(() => curve.getPoints(count / 10), [curve, count]);
-
-  console.log('pointsDiv', pointsDiv[0].toArray());
 
   return (
     <group position-z={position}>
+      {/* Tunnel with shader */}
       {points.map((point: any, index: number) => (
         <mesh key={index} position={point.toArray()} rotation={[0, Math.PI, 0]}>
           <planeGeometry args={[200, 200]} />
@@ -36,31 +44,32 @@ const Tunnel = ({ curve, count, position, rotation }: TunnelProps) => {
           {/* <meshBasicMaterial color='hotpink' side={THREE.FrontSide} /> */}
         </mesh>
       ))}
+      {/* Collision detection boxes on top and bottom of tube */}
       {points.map((point: any, index: number) => (
         <group key={index}>
           <mesh
-            // ref={(el) => (planesRef.current[index] = el)}
+            ref={(el) => (planesTopRef.current[index] = el)}
             position={[
               point.toArray()[0],
-              point.toArray()[1] + 40,
+              point.toArray()[1] + 45,
               point.toArray()[2],
             ]}
             rotation={[Math.PI / 2, Math.PI, 0]}
           >
-            <planeGeometry args={[50, 5]} />
-            <meshBasicMaterial color='white' wireframe />
+            <boxGeometry args={[50, 25, 10]} />
+            <meshBasicMaterial color='white' opacity={0} transparent />
           </mesh>
           <mesh
-            // ref={(el) => (planesRef.current[index] = el)}
+            ref={(el) => (planesBottomRef.current[index] = el)}
             position={[
               point.toArray()[0],
-              point.toArray()[1] - 40,
+              point.toArray()[1] - 45,
               point.toArray()[2],
             ]}
             rotation={[Math.PI / 2, Math.PI, 0]}
           >
-            <planeGeometry args={[50, 5]} />
-            <meshBasicMaterial color='white' wireframe />
+            <boxGeometry args={[50, 25, 10]} />
+            <meshBasicMaterial color='white' opacity={0} transparent />
           </mesh>
         </group>
       ))}
@@ -68,10 +77,7 @@ const Tunnel = ({ curve, count, position, rotation }: TunnelProps) => {
   );
 };
 
-function Tube({ rotation }: TubeProps) {
-  // const appContext = useContext(AppContext);
-  // const toggleGameStart = appContext?.toggleGameStart;
-
+function Tube({ rotation, planesTopRef, planesBottomRef }: TubeProps) {
   // Create curve points
   const points = useMemo(() => {
     let points = [];
@@ -97,7 +103,7 @@ function Tube({ rotation }: TubeProps) {
     return curve;
   }, []);
 
-  const position = -10;
+  const position = -10; // Move tube slightly from center sphere
 
   return (
     <Tunnel
@@ -105,6 +111,8 @@ function Tube({ rotation }: TubeProps) {
       count={1000}
       rotation={rotation}
       position={position}
+      planesTopRef={planesTopRef}
+      planesBottomRef={planesBottomRef}
     />
   );
 }

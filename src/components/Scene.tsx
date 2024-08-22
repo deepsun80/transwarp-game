@@ -1,59 +1,57 @@
-import { useState, useContext, useRef } from 'react';
-import { Grid, OrbitControls, Environment } from '@react-three/drei';
-import { useFrame, useThree } from '@react-three/fiber';
-
-import * as THREE from 'three';
+import { useContext, useRef, useEffect } from 'react';
+import { Environment } from '@react-three/drei';
 
 import Tube from './Tube';
 import Player from './Player';
-// import PlayerStatic from './PlayerStatic';
+import PlayerStatic from './PlayerStatic';
 // import StartText from './StartText';
-// import { AppContext } from '../context/AppContext';
+// import Lights from './Lights';
+
+import { AppContext } from '../context/AppContext';
 
 function Scene() {
-  // const appContext = useContext(AppContext);
+  const appContext = useContext(AppContext);
+  const gameStart = appContext?.gameStart;
+  const toggleGameStart = appContext?.toggleGameStart;
 
-  // const gameStart = appContext?.gameStart;
-  // const toggleGameStart = appContext?.toggleGameStart;
+  const planesTopRef = useRef([]);
+  const planesBottomRef = useRef([]);
 
-  // const [timer, setTimer] = useState(2);
-  const planesRef = useRef([]);
-
-  // useEffect(() => {
-  //   if (!gameStart && timer > 0) {
-  //     setTimeout(() => {
-  //       setTimer(timer - 1);
-  //     }, 1000);
-  //   } else if (gameStart) setTimer(2);
-  // }, [gameStart, timer]);
-
-  // useEffect(() => {
-  //   if (timer <= 0) {
-  //     setTimeout(() => {
-  //       toggleGameStart(true);
-  //     }, 1000);
-  //   }
-  // }, [timer]);
-
-  // useFrame(() => {
-  //   if (playerRef) {
-  //     console.log(playerRef.position.y);
-  //   }
-  // });
+  useEffect(() => {
+    if (!gameStart) {
+      setTimeout(() => {
+        toggleGameStart(true);
+      }, 1000);
+    }
+  }, [gameStart]);
 
   return (
     <>
+      {/* Lights */}
       {/* <Lights /> */}
 
       {/* Geometry */}
-      <Tube rotation={0} planesRef={planesRef} />
+      <Tube
+        rotation={0}
+        planesTopRef={planesTopRef}
+        planesBottomRef={planesBottomRef}
+      />
 
       <mesh>
         <sphereGeometry args={[50, 32, 16]} />
         <meshStandardMaterial color={'lightgrey'} />
       </mesh>
 
-      <Player startPosition={[0, 0, -6200]} />
+      {/* Game Logic */}
+      {gameStart ? (
+        <Player
+          startPosition={[0, 0, -6200]}
+          planesTopRef={planesTopRef}
+          planesBottomRef={planesBottomRef}
+        />
+      ) : (
+        <PlayerStatic startPosition={[0, 0, -6200]} />
+      )}
 
       {/* {!gameStart && <StartText timer={timer} />} */}
 
