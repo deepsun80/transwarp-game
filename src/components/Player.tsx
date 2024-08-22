@@ -4,6 +4,8 @@ import { useKeyboardControls } from '@react-three/drei';
 import { Controls, Speed } from '../helpers';
 import { AppContext } from '../context/AppContext';
 
+// import DissolveMaterial from './DissolveMaterial';
+
 import * as THREE from 'three';
 
 interface PlayerProps {
@@ -11,6 +13,8 @@ interface PlayerProps {
   planesTopRef: React.RefObject<HTMLSelectElement>;
   planesBottomRef: React.RefObject<HTMLSelectElement>;
 }
+
+// const boxMaterial = new THREE.MeshStandardMaterial({ color: 'white' });
 
 function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
   const appContext = useContext(AppContext);
@@ -62,8 +66,16 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
 
   // Player movement and collision detection
   useFrame(() => {
-    // Freeze player before restarting
-    if (playerFreeze) return;
+    const { PlayerSpeed, Acceleration } = Speed;
+    const forward = new THREE.Vector3();
+
+    // Move player forward after freeze
+    if (playerFreeze && container?.current && playerRef?.current) {
+      const velocity = new THREE.Vector3(0, 0, -PlayerSpeed);
+      playerRef.current.getWorldDirection(forward);
+      playerRef.current.position.add(forward.multiplyScalar(velocity.z));
+      return;
+    }
 
     // If game starting place container and player positions to start
     if (!gameStart && container?.current && playerRef?.current) {
@@ -71,9 +83,6 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
       playerRef.current.position.set(0, 0, -6200);
       return;
     }
-
-    const { PlayerSpeed, Acceleration } = Speed;
-    const forward = new THREE.Vector3();
 
     // Player movement
     if (container?.current && playerRef?.current && forwardPressed) {
@@ -107,6 +116,9 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
 
   // Position camera relative to player
   useFrame(({ camera }) => {
+    // Freeze player before restarting
+    // if (playerFreeze) return;
+
     cameraPosition.current.getWorldPosition(cameraWorldPosition.current);
     camera.position.lerp(cameraWorldPosition.current, 0.5);
 
@@ -119,7 +131,7 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
   });
 
   // Check if player intersects any of the collision boxes, and set game logic
-  useFrame(() => {
+  useFrame((_state, delta) => {
     const combinedPlanes = [
       ...planesTopRef.current,
       ...planesBottomRef.current,
@@ -132,7 +144,7 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
 
         setTimeout(() => {
           toggleGameStart(false);
-        }, 500);
+        }, 350);
       }
     });
   });
@@ -144,6 +156,7 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
       <mesh ref={playerRef} position={startPosition}>
         <boxGeometry />
         <meshStandardMaterial color={'pink'} />
+        {/* <DissolveMaterial baseMaterial={boxMaterial} visible={!playerFreeze} /> */}
       </mesh>
     </group>
   );

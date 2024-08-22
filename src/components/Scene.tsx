@@ -3,7 +3,7 @@ import { Environment } from '@react-three/drei';
 
 import Tube from './Tube';
 import Player from './Player';
-import PlayerStatic from './PlayerStatic';
+// import PlayerStatic from './PlayerStatic';
 // import StartText from './StartText';
 // import Lights from './Lights';
 
@@ -21,7 +21,7 @@ function Scene() {
     if (!gameStart) {
       setTimeout(() => {
         toggleGameStart(true);
-      }, 1000);
+      }, 600);
     }
   }, [gameStart]);
 
@@ -49,9 +49,7 @@ function Scene() {
           planesTopRef={planesTopRef}
           planesBottomRef={planesBottomRef}
         />
-      ) : (
-        <PlayerStatic startPosition={[0, 0, -6200]} />
-      )}
+      ) : null}
 
       {/* {!gameStart && <StartText timer={timer} />} */}
 

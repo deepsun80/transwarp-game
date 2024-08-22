@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
+import DissolveMaterial from './DissolveMaterial';
 
 import * as THREE from 'three';
 
