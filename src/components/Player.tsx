@@ -4,6 +4,7 @@ import { useKeyboardControls } from '@react-three/drei';
 import { Controls, Speed } from '../helpers';
 import { AppContext } from '../context/AppContext';
 
+import AfterimageEffect from './AfterimageEffect';
 // import DissolveMaterial from './DissolveMaterial';
 
 import * as THREE from 'three';
@@ -158,6 +159,7 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
         <meshStandardMaterial color={'pink'} />
         {/* <DissolveMaterial baseMaterial={boxMaterial} visible={!playerFreeze} /> */}
       </mesh>
+      {/* <AfterimageEffect target={container.current} /> */}
     </group>
   );
 }
