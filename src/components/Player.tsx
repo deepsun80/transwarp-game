@@ -4,9 +4,6 @@ import { useKeyboardControls } from '@react-three/drei';
 import { Controls, Speed } from '../helpers';
 import { AppContext } from '../context/AppContext';
 
-import AfterimageEffect from './AfterimageEffect';
-// import DissolveMaterial from './DissolveMaterial';
-
 import * as THREE from 'three';
 
 interface PlayerProps {
@@ -14,8 +11,6 @@ interface PlayerProps {
   planesTopRef: React.RefObject<HTMLSelectElement>;
   planesBottomRef: React.RefObject<HTMLSelectElement>;
 }
-
-// const boxMaterial = new THREE.MeshStandardMaterial({ color: 'white' });
 
 function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
   const appContext = useContext(AppContext);
@@ -154,12 +149,11 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
     <group ref={container}>
       <group ref={cameraTarget} position-z={startPosition[2] + 1.5} />
       <group ref={cameraPosition} position-z={startPosition[2] - 5} />
+
       <mesh ref={playerRef} position={startPosition}>
         <boxGeometry />
         <meshStandardMaterial color={'pink'} />
-        {/* <DissolveMaterial baseMaterial={boxMaterial} visible={!playerFreeze} /> */}
       </mesh>
-      {/* <AfterimageEffect target={container.current} /> */}
     </group>
   );
 }
