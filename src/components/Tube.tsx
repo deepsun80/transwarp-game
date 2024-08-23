@@ -57,7 +57,7 @@ const Tunnel = ({
             rotation={[Math.PI / 2, Math.PI, 0]}
           >
             <boxGeometry args={[50, 25, 10]} />
-            <meshBasicMaterial color='white' />
+            <meshBasicMaterial color='white' opacity={0} transparent />
           </mesh>
           <mesh
             ref={(el) => (planesBottomRef.current[index] = el)}
@@ -69,7 +69,7 @@ const Tunnel = ({
             rotation={[Math.PI / 2, Math.PI, 0]}
           >
             <boxGeometry args={[50, 25, 10]} />
-            <meshBasicMaterial color='white' />
+            <meshBasicMaterial color='white' opacity={0} transparent />
           </mesh>
         </group>
       ))}
@@ -86,9 +86,9 @@ function Tube({ rotation, planesTopRef, planesBottomRef }: TubeProps) {
     for (let i = 0; i < 20; i += 1) {
       let yPoint = 0;
       if (i > 1 && i < 18 && i % 2 !== 0) {
-        yPoint = -200;
+        yPoint = Math.random() * -200;
       } else if (i > 1 && i < 18 && i % 2 === 0) {
-        yPoint = 200;
+        yPoint = Math.random() * 200;
       }
       // const yPoint = i > 1 && i < 18 ? Math.random() * 400 : 0;
       // const xPoint = i > 2 && i < 48 ? Math.random() * 200 : 0;

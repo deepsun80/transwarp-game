@@ -1,5 +1,5 @@
 export const Speed = {
-  PlayerSpeed: 5.5,
+  PlayerSpeed: 5,
   Acceleration: 0.2,
   // RotationSpeed: 0.5,
 };
