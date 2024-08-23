@@ -2,14 +2,10 @@ import { useMemo, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import Scene from './components/Scene';
 import { KeyboardControls } from '@react-three/drei';
-import { Controls } from './helpers';
 
 function App() {
   const map = useMemo(
-    () => [
-      { name: Controls.forward, keys: ['ArrowUp', 'KeyW'] },
-      { name: Controls.back, keys: ['ArrowDown', 'KeyS'] },
-    ],
+    () => [{ name: 'forward', keys: ['ArrowUp', 'KeyW'] }],
     []
   );
 

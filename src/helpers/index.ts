@@ -1,11 +1,6 @@
-export const Controls = {
-  forward: 'forward',
-  back: 'back',
-};
-
 export const Speed = {
   PlayerSpeed: 5,
-  Acceleration: 0.1,
+  Acceleration: 0.2,
   // RotationSpeed: 0.5,
 };
 

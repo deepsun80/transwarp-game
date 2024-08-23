@@ -39,7 +39,7 @@ const Tunnel = ({
       {/* Tunnel with shader */}
       {points.map((point: any, index: number) => (
         <mesh key={index} position={point.toArray()} rotation={[0, Math.PI, 0]}>
-          <planeGeometry args={[200, 200]} />
+          <planeGeometry args={[350, 350]} />
           <tunnelShader uLevel={index / 120} />
           {/* <meshBasicMaterial color='hotpink' side={THREE.FrontSide} /> */}
         </mesh>
@@ -51,7 +51,7 @@ const Tunnel = ({
             ref={(el) => (planesTopRef.current[index] = el)}
             position={[
               point.toArray()[0],
-              point.toArray()[1] + 45,
+              point.toArray()[1] + 100,
               point.toArray()[2],
             ]}
             rotation={[Math.PI / 2, Math.PI, 0]}
@@ -63,7 +63,7 @@ const Tunnel = ({
             ref={(el) => (planesBottomRef.current[index] = el)}
             position={[
               point.toArray()[0],
-              point.toArray()[1] - 45,
+              point.toArray()[1] - 100,
               point.toArray()[2],
             ]}
             rotation={[Math.PI / 2, Math.PI, 0]}
@@ -86,9 +86,9 @@ function Tube({ rotation, planesTopRef, planesBottomRef }: TubeProps) {
     for (let i = 0; i < 20; i += 1) {
       let yPoint = 0;
       if (i > 1 && i < 18 && i % 2 !== 0) {
-        yPoint = Math.random() * -200;
+        yPoint = -200;
       } else if (i > 1 && i < 18 && i % 2 === 0) {
-        yPoint = Math.random() * 200;
+        yPoint = 200;
       }
       // const yPoint = i > 1 && i < 18 ? Math.random() * 400 : 0;
       // const xPoint = i > 2 && i < 48 ? Math.random() * 200 : 0;

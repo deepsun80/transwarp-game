@@ -45,7 +45,7 @@ function Scene() {
       {/* Game Logic */}
       {gameStart ? (
         <Player
-          startPosition={[0, 0, -6200]}
+          startPosition={[0, 0, -6250]}
           planesTopRef={planesTopRef}
           planesBottomRef={planesBottomRef}
         />
@@ -55,7 +55,7 @@ function Scene() {
 
       {/* Optional */}
       {/* <OrbitControls /> */}
-      <Environment preset='city' />
+      <Environment preset='park' />
       {/* <Grid
         sectionSize={30}
         sectionColor={'white'}

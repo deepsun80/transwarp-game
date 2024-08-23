@@ -1,7 +1,8 @@
 import { useRef, useState, useContext } from 'react';
-import { useFrame } from '@react-three/fiber';
-import { useKeyboardControls } from '@react-three/drei';
-import { Controls, Speed } from '../helpers';
+import { useFrame, useLoader } from '@react-three/fiber';
+import { useKeyboardControls, useHelper } from '@react-three/drei';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { Speed } from '../helpers';
 import { AppContext } from '../context/AppContext';
 
 import * as THREE from 'three';
@@ -22,6 +23,10 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
   const cameraTarget = useRef();
   const cameraPosition = useRef();
 
+  const gltf = useLoader(GLTFLoader, '/models/Spaceship.glb');
+
+  useHelper(playerRef, THREE.BoxHelper, 'red');
+
   const cameraWorldPosition = useRef(new THREE.Vector3());
   const cameraLookAtWorldPosition = useRef(new THREE.Vector3());
   const cameraLookAt = useRef(new THREE.Vector3());
@@ -29,10 +34,7 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
   const [acc, setAcc] = useState(0);
   const [playerFreeze, setPlayerFreeze] = useState(false);
 
-  const forwardPressed = useKeyboardControls(
-    (state) => state[Controls.forward]
-  );
-  const backPressed = useKeyboardControls((state) => state[Controls.back]);
+  const forwardPressed = useKeyboardControls((state) => state['forward']);
 
   // Player and camera rotation based on mouse pointer
   useFrame(({ pointer }) => {
@@ -93,18 +95,6 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
         playerRef.current.getWorldDirection(forward);
         container.current.position.add(forward.multiplyScalar(velocity.z));
       }
-    } else if (container?.current && backPressed) {
-      if (acc < PlayerSpeed) {
-        const velocity = new THREE.Vector3(0, 0, -acc);
-        playerRef.current.getWorldDirection(forward);
-        container.current.position.sub(forward.multiplyScalar(velocity.z));
-
-        setAcc(acc + Acceleration);
-      } else {
-        const velocity = new THREE.Vector3(0, 0, -PlayerSpeed);
-        playerRef.current.getWorldDirection(forward);
-        container.current.position.sub(forward.multiplyScalar(velocity.z));
-      }
     } else {
       setAcc(0);
     }
@@ -148,12 +138,13 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
   return (
     <group ref={container}>
       <group ref={cameraTarget} position-z={startPosition[2] + 1.5} />
-      <group ref={cameraPosition} position-z={startPosition[2] - 5} />
+      <group ref={cameraPosition} position-z={startPosition[2] - 4} />
 
-      <mesh ref={playerRef} position={startPosition}>
+      {/* <mesh ref={playerRef} position={startPosition}>
         <boxGeometry />
         <meshStandardMaterial color={'pink'} />
-      </mesh>
+      </mesh> */}
+      <primitive object={gltf.scene} ref={playerRef} position={startPosition} />
     </group>
   );
 }
