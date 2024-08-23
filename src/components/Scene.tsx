@@ -1,5 +1,5 @@
 import { useContext, useRef, useEffect } from 'react';
-import { Environment } from '@react-three/drei';
+import { Environment, OrbitControls } from '@react-three/drei';
 
 import Tube from './Tube';
 import Player from './Player';

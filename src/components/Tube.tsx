@@ -57,7 +57,7 @@ const Tunnel = ({
             rotation={[Math.PI / 2, Math.PI, 0]}
           >
             <boxGeometry args={[50, 25, 10]} />
-            <meshBasicMaterial color='white' opacity={0} transparent />
+            <meshBasicMaterial color='white' />
           </mesh>
           <mesh
             ref={(el) => (planesBottomRef.current[index] = el)}
@@ -69,7 +69,7 @@ const Tunnel = ({
             rotation={[Math.PI / 2, Math.PI, 0]}
           >
             <boxGeometry args={[50, 25, 10]} />
-            <meshBasicMaterial color='white' opacity={0} transparent />
+            <meshBasicMaterial color='white' />
           </mesh>
         </group>
       ))}

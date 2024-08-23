@@ -1,4 +1,4 @@
-import { useRef, useState, useContext } from 'react';
+import { useRef, useState, useContext, useMemo } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { useKeyboardControls, useHelper } from '@react-three/drei';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -35,6 +35,44 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
   const [playerFreeze, setPlayerFreeze] = useState(false);
 
   const forwardPressed = useKeyboardControls((state) => state['forward']);
+
+  const glowShader = useMemo(
+    () => ({
+      vertexShader: `
+      varying vec3 vNormal;
+      void main() {
+        vNormal = normalize(normalMatrix * normal);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+      fragmentShader: `
+      uniform vec3 innerColor;
+      uniform vec3 outerColor;
+      uniform vec3 glowColor;
+      uniform float glowIntensity;
+      varying vec3 vNormal;
+      
+      void main() {
+        // Calculate the distance from the center of the sphere (based on the normal)
+        float gradient = (1.0 + vNormal.z) / 2.0;
+
+        // Interpolate between the inner and outer colors based on the gradient
+        vec3 color = mix(innerColor, outerColor, gradient);
+        
+        // Set the final color with the calculated opacity
+        gl_FragColor = vec4(color, 1.);
+      }
+    `,
+      uniforms: {
+        innerColor: { value: new THREE.Color(0x0000ff) }, // Outer color (blue)
+        outerColor: { value: new THREE.Color(0xffffff) }, // Inner color (white)
+        glowIntensity: { value: 0.2 },
+      },
+      transparent: false,
+      side: THREE.FrontSide, // You can also use BackSide for different effects
+    }),
+    []
+  );
 
   // Player and camera rotation based on mouse pointer
   useFrame(({ pointer }) => {
@@ -140,11 +178,31 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
       <group ref={cameraTarget} position-z={startPosition[2] + 1.5} />
       <group ref={cameraPosition} position-z={startPosition[2] - 4} />
 
-      {/* <mesh ref={playerRef} position={startPosition}>
-        <boxGeometry />
-        <meshStandardMaterial color={'pink'} />
-      </mesh> */}
-      <primitive object={gltf.scene} ref={playerRef} position={startPosition} />
+      {/* Player group */}
+      <group ref={playerRef} position={startPosition}>
+        {/* Lights group */}
+        {forwardPressed && (
+          <group>
+            <mesh position={[0.31, -0.3, 0.45]}>
+              <sphereGeometry args={[0.12, 16, 16]} />
+              <shaderMaterial args={[glowShader]} />
+            </mesh>
+            <mesh position={[-0.31, -0.3, 0.45]}>
+              <sphereGeometry args={[0.12, 16, 16]} />
+              <shaderMaterial args={[glowShader]} />
+            </mesh>
+            <mesh position={[-0.27, 0.37, 0.49]}>
+              <sphereGeometry args={[0.12, 16, 16]} />
+              <shaderMaterial args={[glowShader]} />
+            </mesh>
+            <mesh position={[0.27, 0.37, 0.49]}>
+              <sphereGeometry args={[0.12, 16, 16]} />
+              <shaderMaterial args={[glowShader]} />
+            </mesh>
+          </group>
+        )}
+        <primitive object={gltf.scene} />
+      </group>
     </group>
   );
 }
