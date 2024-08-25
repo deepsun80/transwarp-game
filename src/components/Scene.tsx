@@ -55,7 +55,7 @@ function Scene() {
 
       {/* Optional */}
       {/* <OrbitControls /> */}
-      <Environment preset='park' />
+      {/* <Environment preset='park' /> */}
       {/* <Grid
         sectionSize={30}
         sectionColor={'white'}

@@ -1,6 +1,6 @@
 import { useRef, useState, useContext, useMemo } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';
-import { useKeyboardControls, useHelper } from '@react-three/drei';
+import { useKeyboardControls, useHelper, Trail } from '@react-three/drei';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Speed } from '../helpers';
 import { AppContext } from '../context/AppContext';
@@ -155,12 +155,12 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
   });
 
   // Check if player intersects any of the collision boxes, and set game logic
-  useFrame((_state, delta) => {
+  useFrame(() => {
     const combinedPlanes = [
       ...planesTopRef.current,
       ...planesBottomRef.current,
     ];
-    combinedPlanes.forEach((plane: any, index: number) => {
+    combinedPlanes.forEach((plane: any) => {
       const box = new THREE.Box3().setFromObject(playerRef.current);
       const planeBox = new THREE.Box3().setFromObject(plane);
       if (box.intersectsBox(planeBox)) {
@@ -183,22 +183,50 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
         {/* Lights group */}
         {forwardPressed && (
           <group>
-            <mesh position={[0.31, -0.3, 0.45]}>
-              <sphereGeometry args={[0.12, 16, 16]} />
-              <shaderMaterial args={[glowShader]} />
-            </mesh>
-            <mesh position={[-0.31, -0.3, 0.45]}>
-              <sphereGeometry args={[0.12, 16, 16]} />
-              <shaderMaterial args={[glowShader]} />
-            </mesh>
-            <mesh position={[-0.27, 0.37, 0.49]}>
-              <sphereGeometry args={[0.12, 16, 16]} />
-              <shaderMaterial args={[glowShader]} />
-            </mesh>
-            <mesh position={[0.27, 0.37, 0.49]}>
-              <sphereGeometry args={[0.12, 16, 16]} />
-              <shaderMaterial args={[glowShader]} />
-            </mesh>
+            <Trail
+              width={2}
+              length={1}
+              color={'lightblue'}
+              attenuation={(t) => t * t}
+            >
+              <mesh position={[0.31, -0.3, 0.45]}>
+                <sphereGeometry args={[0.12, 16, 16]} />
+                <shaderMaterial args={[glowShader]} />
+              </mesh>
+            </Trail>
+            <Trail
+              width={2}
+              length={1}
+              color={'lightblue'}
+              attenuation={(t) => t * t}
+            >
+              <mesh position={[-0.31, -0.3, 0.45]}>
+                <sphereGeometry args={[0.12, 16, 16]} />
+                <shaderMaterial args={[glowShader]} />
+              </mesh>
+            </Trail>
+            <Trail
+              width={2}
+              length={1}
+              color={'lightblue'}
+              attenuation={(t) => t * t}
+            >
+              <mesh position={[-0.27, 0.37, 0.49]}>
+                <sphereGeometry args={[0.12, 16, 16]} />
+                <shaderMaterial args={[glowShader]} />
+              </mesh>
+            </Trail>
+            <Trail
+              width={2}
+              length={1}
+              color={'lightblue'}
+              attenuation={(t) => t * t}
+            >
+              <mesh position={[0.27, 0.37, 0.49]}>
+                <sphereGeometry args={[0.12, 16, 16]} />
+                <shaderMaterial args={[glowShader]} />
+              </mesh>
+            </Trail>
           </group>
         )}
         <primitive object={gltf.scene} />
