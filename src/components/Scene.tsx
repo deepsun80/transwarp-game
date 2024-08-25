@@ -6,7 +6,7 @@ import Player from './Player';
 // import AfterimageEffect from './AfterimageEffect';
 // import PlayerStatic from './PlayerStatic';
 // import StartText from './StartText';
-// import Lights from './Lights';
+import Lights from './Lights';
 
 import { AppContext } from '../context/AppContext';
 
@@ -29,7 +29,7 @@ function Scene() {
   return (
     <>
       {/* Lights */}
-      {/* <Lights /> */}
+      <Lights />
       {/* <AfterimageEffect /> */}
 
       {/* Geometry */}
@@ -57,7 +57,7 @@ function Scene() {
 
       {/* Optional */}
       {/* <OrbitControls /> */}
-      <Environment preset='park' />
+      {/* <Environment preset='park' /> */}
       {/* <Grid
         sectionSize={30}
         sectionColor={'white'}

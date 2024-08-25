@@ -1,10 +1,4 @@
-import { useState } from 'react';
-
-import * as THREE from 'three';
-
 function Lights() {
-  const [o] = useState(() => new THREE.Object3D());
-
   return (
     <group>
       <ambientLight intensity={0.5} />
@@ -14,12 +8,8 @@ function Lights() {
         intensity={1} // Intensity of the light
         position={[10, 10, 0]} // Position of the light
       /> */}
-      <directionalLight
-        position={[0, 0, 0]}
-        color={'#ffffff'}
-        intensity={5.5}
-      />
-      <primitive object={o} position={[0, 0, -6200]} />
+      <directionalLight position={[0, 2, 1]} color={'#ffffff'} intensity={3} />
+      <directionalLight position={[0, -2, 1]} color={'#ffffff'} intensity={3} />
     </group>
   );
 }
