@@ -3,6 +3,7 @@ import { Environment, OrbitControls } from '@react-three/drei';
 
 import Tube from './Tube';
 import Player from './Player';
+// import AfterimageEffect from './AfterimageEffect';
 // import PlayerStatic from './PlayerStatic';
 // import StartText from './StartText';
 // import Lights from './Lights';
@@ -29,6 +30,7 @@ function Scene() {
     <>
       {/* Lights */}
       {/* <Lights /> */}
+      {/* <AfterimageEffect /> */}
 
       {/* Geometry */}
       <Tube
@@ -55,7 +57,7 @@ function Scene() {
 
       {/* Optional */}
       {/* <OrbitControls /> */}
-      {/* <Environment preset='park' /> */}
+      <Environment preset='park' />
       {/* <Grid
         sectionSize={30}
         sectionColor={'white'}
