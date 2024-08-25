@@ -101,7 +101,7 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
   });
 
   // Player movement and collision detection
-  useFrame(() => {
+  useFrame(({ clock }) => {
     const { PlayerSpeed, Acceleration } = Speed;
     const forward = new THREE.Vector3();
 
@@ -135,6 +135,10 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
       }
     } else {
       setAcc(0);
+
+      const elapsedTime = clock.getElapsedTime();
+      playerRef.current.position.y = Math.sin(elapsedTime * 2) * 0.1;
+      cameraTarget.current.position.y = Math.sin(elapsedTime * 2) * 0.1;
     }
   });
 
