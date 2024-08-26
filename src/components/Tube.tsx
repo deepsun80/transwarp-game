@@ -40,7 +40,7 @@ const Tunnel = ({
       {/* Tunnel with shader */}
       {points.map((point: any, index: number) => (
         <mesh key={index} position={point.toArray()} rotation={[0, Math.PI, 0]}>
-          <planeGeometry args={[350, 350]} />
+          <planeGeometry args={[650, 650]} />
           <tunnelShader uLevel={index / 120} />
           {/* <meshBasicMaterial color='hotpink' side={THREE.FrontSide} /> */}
         </mesh>
@@ -53,12 +53,12 @@ const Tunnel = ({
             ref={(el) => (planesTopRef.current[index] = el)}
             position={[
               point.toArray()[0],
-              point.toArray()[1] + 80,
+              point.toArray()[1] + 90,
               point.toArray()[2],
             ]}
             rotation={[Math.PI / 2, Math.PI, 0]}
           >
-            <boxGeometry args={[145, 35, 10]} />
+            <boxGeometry args={[165, 35, 10]} />
             <meshBasicMaterial
               color='white'
               wireframe
@@ -70,12 +70,12 @@ const Tunnel = ({
             ref={(el) => (planesBottomRef.current[index] = el)}
             position={[
               point.toArray()[0],
-              point.toArray()[1] - 80,
+              point.toArray()[1] - 90,
               point.toArray()[2],
             ]}
             rotation={[Math.PI / 2, Math.PI, 0]}
           >
-            <boxGeometry args={[145, 35, 10]} />
+            <boxGeometry args={[165, 35, 10]} />
             <meshBasicMaterial
               color='white'
               wireframe
