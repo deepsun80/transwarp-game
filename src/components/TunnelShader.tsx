@@ -77,8 +77,8 @@ export const TunnelShader = shaderMaterial(
 
   vec3 a = vec3(0.5, 0.5, 0.5);
   vec3 b = vec3(0.5, 0.5, 0.5);
-  vec3 c = vec3(1.0, 1.0, 0.0);
-  vec3 d = vec3(0.10, 0.20, 0.20);
+  vec3 c = vec3(1.0, 1.0, 1.0);
+  vec3 d = vec3(0.00, 0.33, 0.67);
 
   vec2 rotate(vec2 v, float a) {
     float s = sin(a);

@@ -58,16 +58,16 @@ const Tunnel = ({
             ref={(el) => (planesTopRef.current[index] = el)}
             position={[
               point.toArray()[0],
-              point.toArray()[1] + 210,
+              point.toArray()[1] + 235,
               point.toArray()[2],
             ]}
             rotation={[Math.PI / 2, Math.PI, 0]}
           >
             <boxGeometry args={[385, 65, 40]} />
             <meshBasicMaterial
-              color='white'
+              color='black'
               wireframe
-              opacity={0}
+              opacity={1}
               transparent
             />
           </mesh>
@@ -75,16 +75,16 @@ const Tunnel = ({
             ref={(el) => (planesBottomRef.current[index] = el)}
             position={[
               point.toArray()[0],
-              point.toArray()[1] - 210,
+              point.toArray()[1] - 235,
               point.toArray()[2],
             ]}
             rotation={[Math.PI / 2, Math.PI, 0]}
           >
             <boxGeometry args={[385, 65, 40]} />
             <meshBasicMaterial
-              color='white'
+              color='black'
               wireframe
-              opacity={0}
+              opacity={1}
               transparent
             />
           </mesh>
@@ -97,7 +97,7 @@ const Tunnel = ({
           <mesh
             ref={(el) => (planesLeftRef.current[index] = el)}
             position={[
-              point.toArray()[0] + 210,
+              point.toArray()[0] + 235,
               point.toArray()[1],
               point.toArray()[2],
             ]}
@@ -105,16 +105,16 @@ const Tunnel = ({
           >
             <boxGeometry args={[385, 40, 65]} />
             <meshBasicMaterial
-              color='white'
+              color='black'
               wireframe
-              opacity={0}
+              opacity={1}
               transparent
             />
           </mesh>
           <mesh
             ref={(el) => (planesRightRef.current[index] = el)}
             position={[
-              point.toArray()[0] - 210,
+              point.toArray()[0] - 235,
               point.toArray()[1],
               point.toArray()[2],
             ]}
@@ -122,9 +122,9 @@ const Tunnel = ({
           >
             <boxGeometry args={[385, 40, 65]} />
             <meshBasicMaterial
-              color='white'
+              color='black'
               wireframe
-              opacity={0}
+              opacity={1}
               transparent
             />
           </mesh>
