@@ -12,6 +12,8 @@ interface TubeProps {
   rotation: Number;
   planesTopRef: React.RefObject<HTMLSelectElement>;
   planesBottomRef: React.RefObject<HTMLSelectElement>;
+  planesLeftRef: React.RefObject<HTMLSelectElement>;
+  planesRightRef: React.RefObject<HTMLSelectElement>;
 }
 
 interface TunnelProps {
@@ -21,6 +23,8 @@ interface TunnelProps {
   rotation: Number;
   planesTopRef: React.RefObject<HTMLSelectElement>;
   planesBottomRef: React.RefObject<HTMLSelectElement>;
+  planesLeftRef: React.RefObject<HTMLSelectElement>;
+  planesRightRef: React.RefObject<HTMLSelectElement>;
 }
 
 const Tunnel = ({
@@ -30,6 +34,8 @@ const Tunnel = ({
   rotation, // Use this to rotate each tube modules
   planesTopRef,
   planesBottomRef,
+  planesLeftRef,
+  planesRightRef,
 }: TunnelProps) => {
   // Sample points on the curve
   const points = useMemo(() => curve.getPoints(count), [curve, count]);
@@ -57,11 +63,11 @@ const Tunnel = ({
             ]}
             rotation={[Math.PI / 2, Math.PI, 0]}
           >
-            <boxGeometry args={[375, 65, 40]} />
+            <boxGeometry args={[385, 65, 40]} />
             <meshBasicMaterial
-              color='black'
+              color='white'
               wireframe
-              opacity={1}
+              opacity={0}
               transparent
             />
           </mesh>
@@ -74,11 +80,11 @@ const Tunnel = ({
             ]}
             rotation={[Math.PI / 2, Math.PI, 0]}
           >
-            <boxGeometry args={[375, 65, 40]} />
+            <boxGeometry args={[385, 65, 40]} />
             <meshBasicMaterial
-              color='black'
+              color='white'
               wireframe
-              opacity={1}
+              opacity={0}
               transparent
             />
           </mesh>
@@ -89,7 +95,7 @@ const Tunnel = ({
       {points.map((point: any, index: number) => (
         <group key={index}>
           <mesh
-            // ref={(el) => (planesTopRef.current[index] = el)}
+            ref={(el) => (planesLeftRef.current[index] = el)}
             position={[
               point.toArray()[0] + 210,
               point.toArray()[1],
@@ -97,16 +103,16 @@ const Tunnel = ({
             ]}
             rotation={[0, Math.PI, Math.PI / 2]}
           >
-            <boxGeometry args={[375, 40, 65]} />
+            <boxGeometry args={[385, 40, 65]} />
             <meshBasicMaterial
-              color='black'
+              color='white'
               wireframe
-              opacity={1}
+              opacity={0}
               transparent
             />
           </mesh>
           <mesh
-            // ref={(el) => (planesBottomRef.current[index] = el)}
+            ref={(el) => (planesRightRef.current[index] = el)}
             position={[
               point.toArray()[0] - 210,
               point.toArray()[1],
@@ -114,11 +120,11 @@ const Tunnel = ({
             ]}
             rotation={[0, Math.PI, Math.PI / 2]}
           >
-            <boxGeometry args={[375, 40, 65]} />
+            <boxGeometry args={[385, 40, 65]} />
             <meshBasicMaterial
-              color='black'
+              color='white'
               wireframe
-              opacity={1}
+              opacity={0}
               transparent
             />
           </mesh>
@@ -128,7 +134,13 @@ const Tunnel = ({
   );
 };
 
-function Tube({ rotation, planesTopRef, planesBottomRef }: TubeProps) {
+function Tube({
+  rotation,
+  planesTopRef,
+  planesBottomRef,
+  planesLeftRef,
+  planesRightRef,
+}: TubeProps) {
   // Create curve points
   const points = useMemo(() => {
     let points = [];
@@ -167,6 +179,8 @@ function Tube({ rotation, planesTopRef, planesBottomRef }: TubeProps) {
       position={position}
       planesTopRef={planesTopRef}
       planesBottomRef={planesBottomRef}
+      planesRightRef={planesRightRef}
+      planesLeftRef={planesLeftRef}
     />
   );
 }

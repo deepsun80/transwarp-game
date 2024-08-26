@@ -17,6 +17,8 @@ function Scene() {
 
   const planesTopRef = useRef([]);
   const planesBottomRef = useRef([]);
+  const planesLeftRef = useRef([]);
+  const planesRightRef = useRef([]);
 
   useEffect(() => {
     if (!gameStart) {
@@ -37,6 +39,8 @@ function Scene() {
         rotation={0}
         planesTopRef={planesTopRef}
         planesBottomRef={planesBottomRef}
+        planesLeftRef={planesLeftRef}
+        planesRightRef={planesRightRef}
       />
 
       <mesh>
@@ -50,6 +54,8 @@ function Scene() {
           startPosition={[0, 0, -9740]}
           planesTopRef={planesTopRef}
           planesBottomRef={planesBottomRef}
+          planesLeftRef={planesLeftRef}
+          planesRightRef={planesRightRef}
         />
       ) : null}
 

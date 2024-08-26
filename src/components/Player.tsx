@@ -11,9 +11,17 @@ interface PlayerProps {
   startPosition: number[];
   planesTopRef: React.RefObject<HTMLSelectElement>;
   planesBottomRef: React.RefObject<HTMLSelectElement>;
+  planesLeftRef: React.RefObject<HTMLSelectElement>;
+  planesRightRef: React.RefObject<HTMLSelectElement>;
 }
 
-function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
+function Player({
+  startPosition,
+  planesTopRef,
+  planesBottomRef,
+  planesLeftRef,
+  planesRightRef,
+}: PlayerProps) {
   const appContext = useContext(AppContext);
   const gameStart = appContext?.gameStart;
   const toggleGameStart = appContext?.toggleGameStart;
@@ -169,6 +177,8 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
     const combinedPlanes = [
       ...planesTopRef.current,
       ...planesBottomRef.current,
+      ...planesLeftRef.current,
+      ...planesRightRef.current,
     ];
     combinedPlanes.forEach((plane: any) => {
       const box = new THREE.Box3().setFromObject(playerRef.current);
