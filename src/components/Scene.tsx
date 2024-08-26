@@ -47,7 +47,7 @@ function Scene() {
       {/* Game Logic */}
       {gameStart ? (
         <Player
-          startPosition={[0, 0, -9670]}
+          startPosition={[0, 0, -9740]}
           planesTopRef={planesTopRef}
           planesBottomRef={planesBottomRef}
         />

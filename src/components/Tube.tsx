@@ -52,14 +52,14 @@ const Tunnel = ({
             ref={(el) => (planesTopRef.current[index] = el)}
             position={[
               point.toArray()[0],
-              point.toArray()[1] + 180,
+              point.toArray()[1] + 210,
               point.toArray()[2],
             ]}
             rotation={[Math.PI / 2, Math.PI, 0]}
           >
-            <boxGeometry args={[315, 65, 40]} />
+            <boxGeometry args={[375, 65, 40]} />
             <meshBasicMaterial
-              color='white'
+              color='black'
               wireframe
               opacity={1}
               transparent
@@ -69,14 +69,14 @@ const Tunnel = ({
             ref={(el) => (planesBottomRef.current[index] = el)}
             position={[
               point.toArray()[0],
-              point.toArray()[1] - 180,
+              point.toArray()[1] - 210,
               point.toArray()[2],
             ]}
             rotation={[Math.PI / 2, Math.PI, 0]}
           >
-            <boxGeometry args={[315, 65, 40]} />
+            <boxGeometry args={[375, 65, 40]} />
             <meshBasicMaterial
-              color='white'
+              color='black'
               wireframe
               opacity={1}
               transparent
@@ -91,15 +91,15 @@ const Tunnel = ({
           <mesh
             // ref={(el) => (planesTopRef.current[index] = el)}
             position={[
-              point.toArray()[0] + 180,
+              point.toArray()[0] + 210,
               point.toArray()[1],
               point.toArray()[2],
             ]}
             rotation={[0, Math.PI, Math.PI / 2]}
           >
-            <boxGeometry args={[315, 40, 65]} />
+            <boxGeometry args={[375, 40, 65]} />
             <meshBasicMaterial
-              color='white'
+              color='black'
               wireframe
               opacity={1}
               transparent
@@ -108,15 +108,15 @@ const Tunnel = ({
           <mesh
             // ref={(el) => (planesBottomRef.current[index] = el)}
             position={[
-              point.toArray()[0] - 180,
+              point.toArray()[0] - 210,
               point.toArray()[1],
               point.toArray()[2],
             ]}
             rotation={[0, Math.PI, Math.PI / 2]}
           >
-            <boxGeometry args={[315, 40, 65]} />
+            <boxGeometry args={[375, 40, 65]} />
             <meshBasicMaterial
-              color='white'
+              color='black'
               wireframe
               opacity={1}
               transparent

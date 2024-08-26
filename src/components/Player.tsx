@@ -122,7 +122,7 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
     // If game starting place container and player positions to start
     if (!gameStart && container?.current && playerRef?.current) {
       container.current.position.set(0, 0, 0);
-      playerRef.current.position.set(0, 0, -6250);
+      playerRef.current.position.set(0, 0, -9740);
       return;
     }
 
