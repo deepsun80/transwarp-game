@@ -59,7 +59,12 @@ const Tunnel = ({
             rotation={[Math.PI / 2, Math.PI, 0]}
           >
             <boxGeometry args={[145, 35, 10]} />
-            <meshBasicMaterial color='white' wireframe />
+            <meshBasicMaterial
+              color='white'
+              wireframe
+              opacity={0}
+              transparent
+            />
           </mesh>
           <mesh
             ref={(el) => (planesBottomRef.current[index] = el)}
@@ -71,7 +76,12 @@ const Tunnel = ({
             rotation={[Math.PI / 2, Math.PI, 0]}
           >
             <boxGeometry args={[145, 35, 10]} />
-            <meshBasicMaterial color='white' wireframe />
+            <meshBasicMaterial
+              color='white'
+              wireframe
+              opacity={0}
+              transparent
+            />
           </mesh>
         </group>
       ))}
@@ -89,7 +99,12 @@ const Tunnel = ({
             rotation={[0, Math.PI, Math.PI / 2]}
           >
             <boxGeometry args={[145, 10, 35]} />
-            <meshBasicMaterial color='white' wireframe />
+            <meshBasicMaterial
+              color='white'
+              wireframe
+              opacity={0}
+              transparent
+            />
           </mesh>
           <mesh
             // ref={(el) => (planesBottomRef.current[index] = el)}
@@ -101,7 +116,12 @@ const Tunnel = ({
             rotation={[0, Math.PI, Math.PI / 2]}
           >
             <boxGeometry args={[145, 10, 35]} />
-            <meshBasicMaterial color='white' wireframe />
+            <meshBasicMaterial
+              color='white'
+              wireframe
+              opacity={0}
+              transparent
+            />
           </mesh>
         </group>
       ))}
