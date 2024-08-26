@@ -33,36 +33,35 @@ const Tunnel = ({
 }: TunnelProps) => {
   // Sample points on the curve
   const points = useMemo(() => curve.getPoints(count), [curve, count]);
-  const pointsTwo = useMemo(() => curve.getPoints(count / 2), [curve, count]);
 
   return (
     <group position-z={position}>
       {/* Tunnel with shader */}
       {points.map((point: any, index: number) => (
         <mesh key={index} position={point.toArray()} rotation={[0, Math.PI, 0]}>
-          <planeGeometry args={[650, 650]} />
+          <planeGeometry args={[1000, 1000]} />
           <tunnelShader uLevel={index / 120} />
           {/* <meshBasicMaterial color='hotpink' side={THREE.FrontSide} /> */}
         </mesh>
       ))}
 
       {/* Collision detection boxes on top and bottom of tube */}
-      {pointsTwo.map((point: any, index: number) => (
+      {points.map((point: any, index: number) => (
         <group key={index}>
           <mesh
             ref={(el) => (planesTopRef.current[index] = el)}
             position={[
               point.toArray()[0],
-              point.toArray()[1] + 90,
+              point.toArray()[1] + 180,
               point.toArray()[2],
             ]}
             rotation={[Math.PI / 2, Math.PI, 0]}
           >
-            <boxGeometry args={[165, 35, 10]} />
+            <boxGeometry args={[315, 65, 40]} />
             <meshBasicMaterial
               color='white'
               wireframe
-              opacity={0}
+              opacity={1}
               transparent
             />
           </mesh>
@@ -70,16 +69,16 @@ const Tunnel = ({
             ref={(el) => (planesBottomRef.current[index] = el)}
             position={[
               point.toArray()[0],
-              point.toArray()[1] - 90,
+              point.toArray()[1] - 180,
               point.toArray()[2],
             ]}
             rotation={[Math.PI / 2, Math.PI, 0]}
           >
-            <boxGeometry args={[165, 35, 10]} />
+            <boxGeometry args={[315, 65, 40]} />
             <meshBasicMaterial
               color='white'
               wireframe
-              opacity={0}
+              opacity={1}
               transparent
             />
           </mesh>
@@ -87,39 +86,39 @@ const Tunnel = ({
       ))}
 
       {/* Collision detection boxes on left and right of tube */}
-      {pointsTwo.map((point: any, index: number) => (
+      {points.map((point: any, index: number) => (
         <group key={index}>
           <mesh
             // ref={(el) => (planesTopRef.current[index] = el)}
             position={[
-              point.toArray()[0] + 80,
+              point.toArray()[0] + 180,
               point.toArray()[1],
               point.toArray()[2],
             ]}
             rotation={[0, Math.PI, Math.PI / 2]}
           >
-            <boxGeometry args={[145, 10, 35]} />
+            <boxGeometry args={[315, 40, 65]} />
             <meshBasicMaterial
               color='white'
               wireframe
-              opacity={0}
+              opacity={1}
               transparent
             />
           </mesh>
           <mesh
             // ref={(el) => (planesBottomRef.current[index] = el)}
             position={[
-              point.toArray()[0] - 80,
+              point.toArray()[0] - 180,
               point.toArray()[1],
               point.toArray()[2],
             ]}
             rotation={[0, Math.PI, Math.PI / 2]}
           >
-            <boxGeometry args={[145, 10, 35]} />
+            <boxGeometry args={[315, 40, 65]} />
             <meshBasicMaterial
               color='white'
               wireframe
-              opacity={0}
+              opacity={1}
               transparent
             />
           </mesh>
@@ -139,15 +138,15 @@ function Tube({ rotation, planesTopRef, planesBottomRef }: TubeProps) {
       let yPoint = 0;
       let xPoint = 0;
       if (i > 1 && i < 18 && i % 2 !== 0) {
-        yPoint = Math.random() * -200;
-        xPoint = Math.random() * -200;
+        yPoint = Math.random() * -350;
+        xPoint = Math.random() * -350;
       } else if (i > 1 && i < 18 && i % 2 === 0) {
-        yPoint = Math.random() * 200;
-        xPoint = Math.random() * 200;
+        yPoint = Math.random() * 350;
+        xPoint = Math.random() * 350;
       }
       // const yPoint = i > 1 && i < 18 ? Math.random() * 400 : 0;
       // const xPoint = i > 2 && i < 48 ? Math.random() * 200 : 0;
-      points.push(new THREE.Vector3(xPoint, yPoint, -325 * i));
+      points.push(new THREE.Vector3(xPoint, yPoint, -500 * i));
     }
     return points;
   }, []);
@@ -163,7 +162,7 @@ function Tube({ rotation, planesTopRef, planesBottomRef }: TubeProps) {
   return (
     <Tunnel
       curve={curve}
-      count={1000}
+      count={300}
       rotation={rotation}
       position={position}
       planesTopRef={planesTopRef}
