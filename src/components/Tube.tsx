@@ -33,6 +33,7 @@ const Tunnel = ({
 }: TunnelProps) => {
   // Sample points on the curve
   const points = useMemo(() => curve.getPoints(count), [curve, count]);
+  const pointsTwo = useMemo(() => curve.getPoints(count / 2), [curve, count]);
 
   return (
     <group position-z={position}>
@@ -44,32 +45,63 @@ const Tunnel = ({
           {/* <meshBasicMaterial color='hotpink' side={THREE.FrontSide} /> */}
         </mesh>
       ))}
+
       {/* Collision detection boxes on top and bottom of tube */}
-      {points.map((point: any, index: number) => (
+      {pointsTwo.map((point: any, index: number) => (
         <group key={index}>
           <mesh
             ref={(el) => (planesTopRef.current[index] = el)}
             position={[
               point.toArray()[0],
-              point.toArray()[1] + 100,
+              point.toArray()[1] + 80,
               point.toArray()[2],
             ]}
             rotation={[Math.PI / 2, Math.PI, 0]}
           >
-            <boxGeometry args={[50, 25, 10]} />
-            <meshBasicMaterial color='white' opacity={0} transparent />
+            <boxGeometry args={[145, 35, 10]} />
+            <meshBasicMaterial color='white' wireframe />
           </mesh>
           <mesh
             ref={(el) => (planesBottomRef.current[index] = el)}
             position={[
               point.toArray()[0],
-              point.toArray()[1] - 100,
+              point.toArray()[1] - 80,
               point.toArray()[2],
             ]}
             rotation={[Math.PI / 2, Math.PI, 0]}
           >
-            <boxGeometry args={[50, 25, 10]} />
-            <meshBasicMaterial color='white' opacity={0} transparent />
+            <boxGeometry args={[145, 35, 10]} />
+            <meshBasicMaterial color='white' wireframe />
+          </mesh>
+        </group>
+      ))}
+
+      {/* Collision detection boxes on left and right of tube */}
+      {pointsTwo.map((point: any, index: number) => (
+        <group key={index}>
+          <mesh
+            // ref={(el) => (planesTopRef.current[index] = el)}
+            position={[
+              point.toArray()[0] + 80,
+              point.toArray()[1],
+              point.toArray()[2],
+            ]}
+            rotation={[0, Math.PI, Math.PI / 2]}
+          >
+            <boxGeometry args={[145, 10, 35]} />
+            <meshBasicMaterial color='white' wireframe />
+          </mesh>
+          <mesh
+            // ref={(el) => (planesBottomRef.current[index] = el)}
+            position={[
+              point.toArray()[0] - 80,
+              point.toArray()[1],
+              point.toArray()[2],
+            ]}
+            rotation={[0, Math.PI, Math.PI / 2]}
+          >
+            <boxGeometry args={[145, 10, 35]} />
+            <meshBasicMaterial color='white' wireframe />
           </mesh>
         </group>
       ))}
@@ -85,14 +117,17 @@ function Tube({ rotation, planesTopRef, planesBottomRef }: TubeProps) {
     // Define points along Z axis
     for (let i = 0; i < 20; i += 1) {
       let yPoint = 0;
+      let xPoint = 0;
       if (i > 1 && i < 18 && i % 2 !== 0) {
         yPoint = Math.random() * -200;
+        xPoint = Math.random() * -200;
       } else if (i > 1 && i < 18 && i % 2 === 0) {
         yPoint = Math.random() * 200;
+        xPoint = Math.random() * 200;
       }
       // const yPoint = i > 1 && i < 18 ? Math.random() * 400 : 0;
       // const xPoint = i > 2 && i < 48 ? Math.random() * 200 : 0;
-      points.push(new THREE.Vector3(0, yPoint, -325 * i));
+      points.push(new THREE.Vector3(xPoint, yPoint, -325 * i));
     }
     return points;
   }, []);

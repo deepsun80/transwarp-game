@@ -25,7 +25,7 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
 
   const gltf = useLoader(GLTFLoader, '/models/Spaceship.glb');
 
-  useHelper(playerRef, THREE.BoxHelper, 'red');
+  // useHelper(playerRef, THREE.BoxHelper, 'red');
 
   const cameraWorldPosition = useRef(new THREE.Vector3());
   const cameraLookAtWorldPosition = useRef(new THREE.Vector3());
@@ -92,6 +92,12 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
         -pointer.y * 1 - THREE.MathUtils.degToRad(180),
         0.1
       );
+
+      playerRef.current.rotation.y = THREE.MathUtils.lerp(
+        playerRef.current.rotation.y,
+        pointer.x * 1 - THREE.MathUtils.degToRad(180),
+        0.1
+      );
     }
 
     if (cameraTarget?.current && cameraPosition?.current) {
@@ -109,7 +115,7 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
     if (playerFreeze && container?.current && playerRef?.current) {
       const velocity = new THREE.Vector3(0, 0, -PlayerSpeed);
       playerRef.current.getWorldDirection(forward);
-      playerRef.current.position.add(forward.multiplyScalar(velocity.z));
+      playerRef.current.position.sub(forward.multiplyScalar(velocity.z));
       return;
     }
 
@@ -125,13 +131,13 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
       if (acc < PlayerSpeed) {
         const velocity = new THREE.Vector3(0, 0, -acc);
         playerRef.current.getWorldDirection(forward);
-        container.current.position.add(forward.multiplyScalar(velocity.z));
+        container.current.position.sub(forward.multiplyScalar(velocity.z));
 
         setAcc(acc + Acceleration);
       } else {
         const velocity = new THREE.Vector3(0, 0, -PlayerSpeed);
         playerRef.current.getWorldDirection(forward);
-        container.current.position.add(forward.multiplyScalar(velocity.z));
+        container.current.position.sub(forward.multiplyScalar(velocity.z));
       }
     } else {
       setAcc(0);
@@ -193,7 +199,7 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
               color={'lightblue'}
               attenuation={(t) => t * t}
             >
-              <mesh position={[0.31, -0.3, 0.45]}>
+              <mesh position={[0.31, -0.3, -0.45]}>
                 <sphereGeometry args={[0.12, 16, 16]} />
                 <shaderMaterial args={[glowShader]} />
               </mesh>
@@ -204,7 +210,7 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
               color={'lightblue'}
               attenuation={(t) => t * t}
             >
-              <mesh position={[-0.31, -0.3, 0.45]}>
+              <mesh position={[-0.31, -0.3, -0.45]}>
                 <sphereGeometry args={[0.12, 16, 16]} />
                 <shaderMaterial args={[glowShader]} />
               </mesh>
@@ -215,7 +221,7 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
               color={'lightblue'}
               attenuation={(t) => t * t}
             >
-              <mesh position={[-0.27, 0.37, 0.49]}>
+              <mesh position={[-0.27, 0.37, -0.49]}>
                 <sphereGeometry args={[0.12, 16, 16]} />
                 <shaderMaterial args={[glowShader]} />
               </mesh>
@@ -226,7 +232,7 @@ function Player({ startPosition, planesTopRef, planesBottomRef }: PlayerProps) {
               color={'lightblue'}
               attenuation={(t) => t * t}
             >
-              <mesh position={[0.27, 0.37, 0.49]}>
+              <mesh position={[0.27, 0.37, -0.49]}>
                 <sphereGeometry args={[0.12, 16, 16]} />
                 <shaderMaterial args={[glowShader]} />
               </mesh>
