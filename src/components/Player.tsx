@@ -33,7 +33,7 @@ function Player({
 
   const gltf = useLoader(GLTFLoader, '/models/Spaceship.glb');
 
-  // useHelper(playerRef, THREE.BoxHelper, 'red');
+  useHelper(playerRef, THREE.BoxHelper, 'red');
 
   const cameraWorldPosition = useRef(new THREE.Vector3());
   const cameraLookAtWorldPosition = useRef(new THREE.Vector3());
@@ -158,9 +158,6 @@ function Player({
 
   // Position camera relative to player
   useFrame(({ camera }) => {
-    // Freeze player before restarting
-    // if (playerFreeze) return;
-
     cameraPosition.current.getWorldPosition(cameraWorldPosition.current);
     camera.position.lerp(cameraWorldPosition.current, 0.5);
 
